@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="view-transition" content="same-origin">
+	<title>The Menance of Modern Age</title>
+	<style>
+		@view-transition {
+			navigation: auto;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background: #000;
+		}
+
+		.container {
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.poster {
+			position: relative;
+			aspect-ratio: 756 / 1068;
+			width: min(100vw, calc(112vh * 756 / 1068));
+			height: min(100vh, calc(100vw * 1068 / 756));
+			transition: transform 0.2s ease, opacity 0.2s ease;
+			will-change: transform, opacity;
+			animation: posterFadeIn 0.2s ease;
+		}
+
+		@keyframes posterFadeIn {
+			from {
+				opacity: 0;
+				transform: scale(0.97);
+			}
+
+			to {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+
+		.poster.slide-out-left {
+			transform: translateX(-18%);
+			opacity: 0;
+		}
+
+		.poster.slide-out-right {
+			transform: translateX(18%);
+			opacity: 0;
+		}
+
+		.poster .bg {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+
+		.circle {
+			position: absolute;
+			inset: 0;
+			/* Z-index levels (same technique as index_2.html):
+			   2: biochemical (outer, below center)
+			   3: connector to biochemical (over biochemical, under center)
+			   4: Treatment (center)
+			   5: connectors to virological & histological (over center, under those circles)
+			   6: virological, histological (outer, above center)
+			*/
+		}
+
+		.circle>.circle-item {
+			position: absolute;
+			transform: translate(-50%, -50%);
+		}
+
+		.circle-item {
+			cursor: pointer;
+			transition: transform 0.4s ease, opacity 0.4s ease;
+		}
+
+		/* Outer Circles */
+		.biochemical_circle {
+			z-index: 2;
+		}
+
+		.virological_circle,
+		.histological_circle {
+			z-index: 6;
+		}
+
+		/* Center Circle */
+		.treatment_circle {
+			z-index: 4;
+		}
+
+		.connector {
+			position: absolute;
+			transform-origin: 0% 50%;
+		}
+
+		.circle-item.active {
+			left: 50% !important;
+			top: 50% !important;
+			transform: translate(-50%, -50%) scale(2.4) !important;
+			z-index: 100 !important;
+		}
+
+		.circle-item.hidden,
+		.connector.hidden {
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		.circle img {
+			width: 100%;
+			display: block;
+		}
+
+		.biochemical_circle {
+			width: 29%;
+			height: 19%;
+			left: 19%;
+			top: 33%;
+		}
+
+		.biochemical_circle img {
+			height: 120%;
+		}
+
+		.virological_circle {
+			width: 35%;
+			height: 23%;
+			left: 69%;
+			top: 39%;
+		}
+
+		.virological_circle img {
+			height: 109%;
+		}
+
+		.treatment_circle {
+			width: 28%;
+			height: 18.8%;
+			left: 42%;
+			top: 48%;
+		}
+
+		.treatment_circle img {
+			height: 123% !important;
+		}
+
+		.histological_circle {
+			width: 36%;
+			height: 21%;
+			left: 34%;
+			top: 70%;
+		}
+
+		.histological_circle img {
+			height: 120%;
+		}
+
+		.connector svg {
+			width: 100%;
+			height: 100%;
+			display: block;
+			filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
+			overflow: visible;
+		}
+
+		.conn-biochemical {
+			left: 34%;
+			top: 40%;
+			width: 8%;
+			height: 6%;
+			transform: rotate(217deg) !important;
+			z-index: 3;
+		}
+
+		.conn-virological {
+			left: 60%;
+			top: 39%;
+			width: 10%;
+			height: 9%;
+			transform: rotate(144deg) !important;
+			z-index: 5;
+		}
+
+		.conn-histological {
+			left: 36%;
+			top: 59.9%;
+			width: 11%;
+			height: 10%;
+			transform: rotate(287deg) !important;
+			z-index: 5;
+		}
+
+		.overlay {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			transform: none !important;
+			/* background: rgb(0 0 0 / 16%); */
+			transition: background .3s ease;
+			z-index: 50;
+			pointer-events: none;
+		}
+
+		.overlay.active {
+			background: rgb(0 0 0 / 45%);
+		}
+
+		.overlay.show {
+			opacity: 1;
+		}
+
+		.biochemical_circle.active {
+			top: 46% !important;
+		}
+
+		.side-nav {
+			position: fixed;
+			bottom: max(16px, env(safe-area-inset-bottom));
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 clamp(10px, 3vw, 20px);
+			box-sizing: border-box;
+			pointer-events: none;
+			z-index: 9999;
+		}
+
+		.side-btn {
+			pointer-events: auto;
+			background: rgba(0, 0, 0, 0.6);
+			border: 2px solid white;
+			color: white;
+			width: clamp(38px, 9vw, 50px);
+			height: clamp(38px, 9vw, 50px);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			font-weight: bold;
+			touch-action: manipulation;
+		}
+
+		@media (max-width: 991px) {
+			.side-nav {
+				display: none;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="poster">
+
+			<img src="background_1.png" class="bg" alt="">
+
+			<div class="circle">
+				<div class="overlay"></div>
+
+				<!-- Connectors (tapered gradient bar, same style as index_2.html) -->
+				<div class="connector conn-biochemical">
+					<svg viewBox="0 0 100 40" preserveAspectRatio="none">
+						<defs>
+							<linearGradient id="connGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+								<stop offset="0%" stop-color="#e0e0e0" />
+								<stop offset="50%" stop-color="#b0b0b0" />
+								<stop offset="100%" stop-color="#e0e0e0" />
+							</linearGradient>
+						</defs>
+						<!-- Moti side (Left/Start) at 0, Patli side (Right/End) at 100 -->
+						<path d="M0,10 L85,15 Q100,20 85,25 L0,30 Z" fill="url(#connGrad)" />
+					</svg>
+				</div>
+
+				<div class="connector conn-virological">
+					<svg viewBox="0 0 100 40" preserveAspectRatio="none">
+						<defs>
+							<linearGradient id="connGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+								<stop offset="0%" stop-color="#e0e0e0" />
+								<stop offset="50%" stop-color="#b0b0b0" />
+								<stop offset="100%" stop-color="#e0e0e0" />
+							</linearGradient>
+						</defs>
+						<path d="M0,10 L85,15 Q100,20 85,25 L0,30 Z" fill="url(#connGrad2)" />
+					</svg>
+				</div>
+
+				<div class="connector conn-histological">
+					<svg viewBox="0 0 100 40" preserveAspectRatio="none">
+						<defs>
+							<linearGradient id="connGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+								<stop offset="0%" stop-color="#e0e0e0" />
+								<stop offset="50%" stop-color="#b0b0b0" />
+								<stop offset="100%" stop-color="#e0e0e0" />
+							</linearGradient>
+						</defs>
+						<path d="M0,10 L85,15 Q100,20 85,25 L0,30 Z" fill="url(#connGrad3)" />
+					</svg>
+				</div>
+
+				<!-- Outer Circles -->
+				<div class="circle-item biochemical_circle">
+					<img src="biochemical_circle.png">
+				</div>
+
+				<div class="circle-item virological_circle">
+					<img src="virological_circle.png">
+				</div>
+
+				<div class="circle-item histological_circle">
+					<img src="histological_circle.png">
+				</div>
+
+				<!-- Center Circle -->
+				<div class="circle-item treatment_circle">
+					<img src="treatment_circle.png">
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+	<div class="side-nav">
+		<a href="" class="side-btn">❮</a>
+		<a href="index2.html" class="side-btn">❯</a>
+	</div>
+
+	<script>
+		(function () {
+			function prefetchPage(url) {
+				if (!url) return;
+
+				var l = document.createElement('link');
+				l.rel = 'prefetch';
+				l.href = url;
+				document.head.appendChild(l);
+
+				fetch(url).then(function (res) { return res.text(); })
+					.then(function (html) {
+						var match = html.match(/<img[^>]+class=["']?bg["']?[^>]*src=["']([^"']+)["']/i);
+						if (match && match[1]) {
+							var img = new Image();
+							img.src = match[1];
+						}
+					}).catch(function () { });
+			}
+
+			document.addEventListener('DOMContentLoaded', function () {
+				document.querySelectorAll('.side-nav a.side-btn').forEach(function (a) {
+					prefetchPage(a.getAttribute('href'));
+				});
+			});
+		})();
+
+		const circles = document.querySelectorAll(".circle-item");
+		const connectors = document.querySelectorAll(".connector");
+		const overlay = document.querySelector(".overlay");
+		const posterEl = document.querySelector(".poster");
+
+		circles.forEach((circle) => {
+
+			circle.addEventListener("click", () => {
+
+				const wasActive = circle.classList.contains("active");
+
+				circles.forEach((c) => {
+					c.classList.remove("active");
+					c.classList.remove("hidden");
+				});
+
+				connectors.forEach((cn) => {
+					cn.classList.remove("hidden");
+				});
+
+				overlay.classList.remove("active");
+
+				if (wasActive) {
+					return;
+				}
+
+				circle.classList.add("active");
+
+				overlay.classList.add("active");
+
+				circles.forEach((c) => {
+					if (c !== circle) {
+						c.classList.add("hidden");
+					}
+				});
+
+				connectors.forEach((cn) => {
+					cn.classList.add("hidden");
+				});
+
+			});
+
+		});
+
+		overlay.addEventListener("click", () => {
+
+			circles.forEach((c) => {
+				c.classList.remove("active");
+				c.classList.remove("hidden");
+			});
+
+			connectors.forEach((cn) => {
+				cn.classList.remove("hidden");
+			});
+
+			overlay.classList.remove("active");
+
+		});
+
+		function goToPage(url, direction) {
+			if (!posterEl) {
+				window.location.href = url;
+				return;
+			}
+			posterEl.classList.add(direction === "next" ? "slide-out-left" : "slide-out-right");
+			setTimeout(() => {
+				window.location.href = url;
+			}, 220);
+		}
+
+		let startX = 0;
+		let endX = 0;
+
+		document.addEventListener("touchstart", function (e) {
+			startX = e.changedTouches[0].clientX;
+		});
+
+		document.addEventListener("touchend", function (e) {
+			endX = e.changedTouches[0].clientX;
+
+			let distance = endX - startX;
+
+			if (Math.abs(distance) > 80) {
+
+				if (distance > 0) {
+					goToPage("", "prev");
+				}
+
+				else {
+					goToPage("index2.html", "next");
+				}
+			}
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>JETEPAR</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background: #000;
+		}
+
+		.container {
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.poster {
+			position: relative;
+			aspect-ratio: 756 / 1068;
+			width: min(100vw, calc(112vh * 756 / 1068));
+			height: min(100vh, calc(100vw * 1068 / 756));
+			transition: transform 0.35s ease, opacity 0.35s ease;
+			will-change: transform, opacity;
+			animation: posterFadeIn 0.35s ease;
+
+		}
+
+		@keyframes posterFadeIn {
+			from {
+				opacity: 0;
+				transform: scale(0.97);
+			}
+
+			to {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+
+		.poster.slide-out-left {
+			transform: translateX(-18%);
+			opacity: 0;
+		}
+
+		.poster.slide-out-right {
+			transform: translateX(18%);
+			opacity: 0;
+		}
+
+		.poster .bg {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+
+		/* Overlay */
+		.circle {
+			position: absolute;
+			inset: 0;
+			/* Z-index levels:
+			   2: glucuronic (outer, below center)
+			   3: connector to glucuronic (over glucuronic, under center)
+			   4: Jetepar (center)
+			   5: connectors to betaine & nicotinamide (over center, under those circles)
+			   6: betaine, nicotinamide (outer, above center)
+			*/
+		}
+
+		.circle>.circle-item {
+			position: absolute;
+			transform: translate(-50%, -50%);
+		}
+
+		.circle-item {
+			cursor: pointer;
+			transition: transform 0.4s ease, opacity 0.4s ease;
+		}
+
+		.circle-item.active {
+			left: 50% !important;
+			top: 51% !important;
+			transform: translate(-50%, -50%) scale(1.7) !important;
+			z-index: 100;
+		}
+
+		.circle-item.hidden,
+		.connector.hidden {
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		.circle img {
+			width: 100%;
+			display: block;
+		}
+
+		.Jetepar_circle {
+			z-index: 4;
+		}
+
+		.glucuronic_circle {
+			z-index: 2;
+		}
+
+		.betaine_circle,
+		.nicotinamide_circle {
+			z-index: 6;
+		}
+
+		.glucuronic_circle {
+			width: 35%;
+			left: 20%;
+			top: 41%;
+		}
+
+		.betaine_circle {
+			width: 39%;
+			left: 77%;
+			top: 39%;
+		}
+
+		.Jetepar_circle {
+			width: 35%;
+			left: 48%;
+			top: 49%;
+		}
+
+		.nicotinamide_circle {
+			width: 40%;
+			left: 34%;
+			top: 75%;
+		}
+
+		/* Connector (tapered bar, same technique as index_1.html) */
+		.connector {
+			position: absolute;
+			transform-origin: 0% 50%;
+		}
+
+		.connector svg {
+			width: 100%;
+			height: 100%;
+			display: block;
+			filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
+			overflow: visible;
+		}
+
+		.conn-glucuronic {
+			left: 37%;
+			top: 42%;
+			width: 9%;
+			height: 7%;
+			transform: rotate(212deg) !important;
+			z-index: 3;
+		}
+
+		.conn-betaine {
+			left: 70%;
+			top: 32.45%;
+			width: 17%;
+			height: 11.5%;
+			transform: rotate(149deg) !important;
+			z-index: 5;
+		}
+
+		.conn-nicotinamide {
+			left: 37%;
+			top: 59.45%;
+			width: 14%;
+			height: 12.5%;
+			transform: rotate(288deg) !important;
+			z-index: 5;
+		}
+
+		.overlay {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			transform: none !important;
+			/* background: rgb(0 0 0 / 16%); */
+			transition: background .3s ease;
+			z-index: 50;
+			pointer-events: none;
+		}
+
+		.overlay.active {
+			background: rgb(0 0 0 / 45%);
+		}
+
+		.overlay.show {
+			opacity: 1;
+		}
+
+		.circle-item.active {
+			z-index: 100;
+		}
+
+		.side-nav {
+			position: fixed;
+			bottom: max(16px, env(safe-area-inset-bottom));
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 clamp(10px, 3vw, 20px);
+			box-sizing: border-box;
+			pointer-events: none;
+			z-index: 9999;
+		}
+
+		.side-btn {
+			pointer-events: auto;
+			background: rgba(0, 0, 0, 0.6);
+			border: 2px solid white;
+			color: white;
+			width: clamp(38px, 9vw, 50px);
+			height: clamp(38px, 9vw, 50px);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			font-weight: bold;
+			touch-action: manipulation;
+		}
+
+		/* Desktop */
+		.side-nav {
+			display: flex;
+		}
+
+		/* Tablet + Mobile */
+		@media (max-width: 991px) {
+			.side-nav {
+				display: none;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="poster">
+
+			<img src="background_2.png" class="bg" alt="">
+
+			<div class="circle">
+				<div class="overlay"></div>
+
+				<div class="connector conn-glucuronic">
+					<svg viewBox="0 0 100 40" preserveAspectRatio="none">
+						<defs>
+							<linearGradient id="connGradGlucuronic" x1="0%" y1="0%" x2="0%" y2="100%">
+								<stop offset="0%" stop-color="#e0e0e0" />
+								<stop offset="50%" stop-color="#b0b0b0" />
+								<stop offset="100%" stop-color="#e0e0e0" />
+							</linearGradient>
+						</defs>
+						<path d="M0,10 L85,15 Q100,20 85,25 L0,30 Z" fill="url(#connGradGlucuronic)" />
+					</svg>
+				</div>
+
+				<div class="connector conn-betaine">
+					<svg viewBox="0 0 100 40" preserveAspectRatio="none">
+						<defs>
+							<linearGradient id="connGradBetaine" x1="0%" y1="0%" x2="0%" y2="100%">
+								<stop offset="0%" stop-color="#e0e0e0" />
+								<stop offset="50%" stop-color="#b0b0b0" />
+								<stop offset="100%" stop-color="#e0e0e0" />
+							</linearGradient>
+						</defs>
+						<path d="M0,10 L85,15 Q100,20 85,25 L0,30 Z" fill="url(#connGradBetaine)" />
+					</svg>
+				</div>
+
+				<div class="connector conn-nicotinamide">
+					<svg viewBox="0 0 100 40" preserveAspectRatio="none">
+						<defs>
+							<linearGradient id="connGradNicotinamide" x1="0%" y1="0%" x2="0%" y2="100%">
+								<stop offset="0%" stop-color="#e0e0e0" />
+								<stop offset="50%" stop-color="#b0b0b0" />
+								<stop offset="100%" stop-color="#e0e0e0" />
+							</linearGradient>
+						</defs>
+						<path d="M0,10 L85,15 Q100,20 85,25 L0,30 Z" fill="url(#connGradNicotinamide)" />
+					</svg>
+				</div>
+
+				<div class="circle-item glucuronic_circle">
+					<img src="glucuronic_circle.png">
+				</div>
+
+				<div class="circle-item betaine_circle">
+					<img src="betaine_circle.png">
+				</div>
+
+				<div class="circle-item Jetepar_circle">
+					<img src="jetepar_circle.png">
+				</div>
+
+				<div class="circle-item nicotinamide_circle">
+					<img src="nicotinamide_circle.png">
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+	<div class="side-nav">
+		<a href="index.html" class="side-btn">❮</a>
+		<a href="index3.html" class="side-btn">❯</a>
+	</div>
+
+	<script>
+		const circles = document.querySelectorAll(".circle-item");
+		const connectors = document.querySelectorAll(".connector");
+		const overlay = document.querySelector(".overlay");
+		const posterEl = document.querySelector(".poster");
+
+
+		circles.forEach((circle) => {
+
+			circle.addEventListener("click", () => {
+
+				const wasActive = circle.classList.contains("active");
+
+				// Reset everything
+				circles.forEach((c) => {
+					c.classList.remove("active");
+					c.classList.remove("hidden");
+				});
+
+				connectors.forEach((cn) => {
+					cn.classList.remove("hidden");
+				});
+
+				overlay.classList.remove("active");
+
+				if (wasActive) {
+					return;
+				}
+
+				// Active Circle
+				circle.classList.add("active");
+
+				// Overlay dark
+				overlay.classList.add("active");
+
+				// Hide other circles
+				circles.forEach((c) => {
+					if (c !== circle) {
+						c.classList.add("hidden");
+					}
+				});
+
+				// Hide connectors
+				connectors.forEach((cn) => {
+					cn.classList.add("hidden");
+				});
+
+			});
+
+		});
+		function goToPage(url, direction) {
+			if (!posterEl) {
+				window.location.href = url;
+				return;
+			}
+			posterEl.classList.add(direction === "next" ? "slide-out-left" : "slide-out-right");
+			setTimeout(() => {
+				window.location.href = url;
+			}, 320);
+		}
+
+		// Overlay click => Reset
+		overlay.addEventListener("click", () => {
+
+			circles.forEach((c) => {
+				c.classList.remove("active");
+				c.classList.remove("hidden");
+			});
+
+			connectors.forEach((cn) => {
+				cn.classList.remove("hidden");
+			});
+
+			overlay.classList.remove("active");
+
+		});
+		let startX = 0;
+		let endX = 0;
+
+		document.addEventListener("touchstart", function (e) {
+			startX = e.changedTouches[0].clientX;
+		});
+
+		document.addEventListener("touchend", function (e) {
+			endX = e.changedTouches[0].clientX;
+
+			let distance = endX - startX;
+
+			// minimum swipe distance
+			if (Math.abs(distance) > 80) {
+
+				// Swipe Right -> Previous
+				if (distance > 0) {
+					goToPage("index.html", "prev");
+				} else {
+					goToPage("index3.html", "next");
+				}
+			}
+		});
+	</script>
+</body>
+
+</html>

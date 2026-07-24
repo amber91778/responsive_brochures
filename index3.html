@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+	<meta name="view-transition" content="same-origin">
+	<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+	<title>JETEPAR® – Fully Responsive Infographic</title>
+	<style>
+		/* Native cross-document smooth navigation (Chrome/Edge 126+).
+		   This is what actually removes the white "blink" between page loads.
+		   Browsers that don't support it simply ignore this rule — no harm done. */
+		@view-transition {
+			navigation: auto;
+		}
+
+		@font-face {
+			font-family: 'Calligri';
+			src: url('Calligri-Bold-Italic.ttf') format('truetype');
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			-webkit-tap-highlight-color: transparent;
+			-webkit-text-size-adjust: 100%;
+			text-size-adjust: 100%;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			height: 100dvh;
+			overflow: hidden;
+			background: #000;
+			overscroll-behavior: none;
+			touch-action: pan-x pan-y;
+		}
+
+		.container {
+			width: 100vw;
+			width: 100dvw;
+			height: 100vh;
+			height: 100dvh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+		}
+
+		.poster-stage {
+			position: relative;
+			width: 756px;
+			height: 951px;
+			transform-origin: center center;
+			flex-shrink: 0;
+			/* CHANGED: transform + opacity both transition now, so slide-out works
+			   the same way it does on the second page (JS still sets scale via inline
+			   style — see script at the bottom). */
+			transition: transform 0.35s ease, opacity 0.35s ease;
+			will-change: transform, opacity;
+			animation: posterFadeIn 0.35s ease;
+		}
+
+		@keyframes posterFadeIn {
+			from {
+				opacity: 0;
+			}
+
+			to {
+				opacity: 1;
+			}
+		}
+
+		/* CHANGED: same slide-out-left / slide-out-right classes as the second page,
+		   applied by JS right before navigating, direction-aware. */
+		.poster-stage.slide-out-left {
+			opacity: 0;
+		}
+
+		.poster-stage.slide-out-right {
+			opacity: 0;
+		}
+
+		.poster {
+			position: relative;
+			width: 756px;
+			height: 951px;
+			overflow: hidden;
+			--pw: 756px;
+			--ph: 951px;
+		}
+
+		.poster .bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: block;
+			z-index: 0;
+			object-fit: cover;
+		}
+
+		.content-wrapper {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			z-index: 2;
+			overflow: hidden;
+		}
+
+		.content-wrapper.dim-rest {
+			visibility: hidden;
+		}
+
+		.content-wrapper,
+		.card,
+		img {
+			position: relative;
+			z-index: 2;
+		}
+
+		.zoom-section {
+			border-radius: 12px;
+			padding: 10px;
+			cursor: zoom-in;
+			z-index: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			margin-top: -43px;
+			touch-action: manipulation;
+		}
+
+		.early-flex {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			gap: 15px;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+
+		.logo-wrap {
+			flex-shrink: 0;
+			width: 60px;
+		}
+
+		.early-logo1,
+		.early-logo2,
+		.early-logo3 {
+			width: 100%;
+			height: auto;
+			display: block;
+			margin-left: 72%;
+		}
+
+		.early-logo1 {
+			margin-top: 304px;
+		}
+
+		.early-logo2 {
+			margin-top: 42px;
+		}
+
+		.early-logo3 {
+			margin-top: 27px;
+		}
+
+		.early-heading1,
+		.early-heading2,
+		.early-heading3 {
+			font-size: 21px;
+			flex: 1;
+			letter-spacing: 1.9px;
+			text-align: left;
+			color: white;
+			font-family: sans-serif;
+		}
+
+		.early-heading1 {
+			margin-top: 306px;
+			margin-left: 19%;
+		}
+
+		.early-heading2 {
+			margin-top: 9%;
+			margin-left: 7%;
+		}
+
+		.early-heading3 {
+			margin-left: 6%;
+			margin-top: 7%;
+		}
+
+		.indent-line1 {
+			padding-left: 28px;
+		}
+
+		.indent-line2 {
+			padding-left: 26px;
+		}
+
+		.indent-line3 {
+			padding-left: 74px;
+		}
+
+		.graph-img-1,
+		.graph-img-2,
+		.graph-img-3 {
+			width: 100%;
+			max-width: 472px;
+			border: 2px solid white;
+			border-radius: 15px;
+			display: block;
+			margin: 0px auto;
+			margin-left: 20%;
+		}
+
+		.graph-img-1 {
+			margin-top: -2%;
+			height: 46% !important;
+		}
+
+		.graph-img-2 {
+			margin-top: -2%;
+			height: 46% !important;
+		}
+
+		.graph-img-3 {
+			margin-top: -2%;
+			height: 46% !important;
+		}
+
+		.source-text {
+			font-size: 8px;
+			text-align: right;
+			opacity: 0.8;
+		}
+
+		.heading-wrap {
+			flex: 1;
+			width: 100%;
+		}
+
+		.overlay-bg {
+			display: none;
+			position: fixed;
+			inset: 0;
+			z-index: 9998;
+			background: transparent;
+			/* no black dim — per request */
+		}
+
+		.overlay-bg.show {
+			display: block;
+		}
+
+
+		.card-1.active {
+			position: fixed !important;
+			top: 37%;
+			left: 48%;
+			width: 774px;
+			margin: 0;
+			z-index: 9999;
+			cursor: zoom-out;
+			background: #0b2e6300;
+			border-radius: 20px;
+			transform: translate(-50%, -50%) scale(var(--zoomScale));
+		}
+
+
+		.card-2.active {
+			position: fixed !important;
+			top: 52%;
+			left: 47.5%;
+			width: 758px;
+			margin: 0;
+			z-index: 9999;
+			cursor: zoom-out;
+			background: #0b2e6300;
+			border-radius: 20px;
+			transform: translate(-50%, -50%) scale(var(--zoomScale));
+		}
+
+
+		.card-3.active {
+			position: fixed !important;
+			top: 52%;
+			left: 47.5%;
+			width: 758px;
+			margin: 0;
+			z-index: 9999;
+			cursor: zoom-out;
+			background: #0b2e6300;
+			border-radius: 20px;
+			transform: translate(-50%, -50%) scale(var(--zoomScale));
+		}
+
+		.zoom-section.active .medical,
+		.zoom-section.active .vol {
+			font-size: 15px !important;
+			font-family: sans-serif;
+			margin-right: 3% !important;
+		}
+
+		.zoom-section.active .vol-III {
+			font-size: 11px !important;
+			font-family: sans-serif;
+			margin-right: 3% !important;
+		}
+
+		.card-1.active .graph-img-2 {
+			height: 240px !important;
+			margin-top: -20px;
+			width: 590px;
+			max-width: 590px;
+		}
+
+
+		.card-2.active .graph-img-1 {
+			height: 260px !important;
+			margin-top: -10px;
+			width: 590px;
+			max-width: 590px;
+		}
+
+		.card-3.active .graph-img-3 {
+			height: 260px !important;
+			margin-top: -10px;
+			width: 590px;
+			max-width: 590px;
+		}
+
+		.card-1.active .early-logo1 {
+			width: 135%;
+		}
+
+		.card-2.active .early-logo2 {
+			width: 150%;
+		}
+
+		.card-3.active .early-logo3 {
+			width: 150%;
+		}
+
+		.card-1.active .early-heading1 {
+			font-size: 28px;
+			margin-left: 21%;
+		}
+
+		.card-2.active .early-heading2 {
+			font-size: 27px;
+			margin-left: 8%;
+		}
+
+		.card-3.active .early-heading3 {
+			font-size: 27px;
+			margin-left: 8%;
+		}
+
+
+		.side-nav {
+			position: fixed;
+			bottom: max(16px, env(safe-area-inset-bottom));
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 clamp(10px, 3vw, 20px);
+			box-sizing: border-box;
+			pointer-events: none;
+			z-index: 9999;
+		}
+
+		.side-btn {
+			pointer-events: auto;
+			background: rgba(0, 0, 0, 0.6);
+			border: 2px solid white;
+			color: white;
+			width: clamp(38px, 9vw, 50px);
+			height: clamp(38px, 9vw, 50px);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			font-weight: bold;
+			touch-action: manipulation;
+
+		}
+
+		.offers-text {
+			position: absolute;
+			top: 189px;
+			left: 31%;
+			font-family: 'Calligri', cursive;
+			font-size: 49px;
+			color: white;
+			z-index: 2;
+			pointer-events: none;
+			transform: rotate(336deg);
+		}
+
+
+		@media (max-height:700px) {
+			.card-1.active {
+				transform: translate(-50%, -48%) scale(var(--zoomScale));
+			}
+		}
+
+
+
+		@media (max-height:600px) {
+			.card-1.active {
+				transform: translate(-50%, -46%) scale(var(--zoomScale));
+			}
+		}
+
+
+		@media (max-height:500px) {
+			.card-1.active {
+				transform: translate(-50%, -48%) scale(var(--zoomScale));
+			}
+		}
+
+		/* 400px - 312px */
+		@media (max-height:400px) {
+			.card-1.active {
+				transform: translate(-50%, -42%) scale(var(--zoomScale));
+			}
+		}
+
+		/* Desktop */
+		.side-nav {
+			display: flex;
+		}
+
+		/* Tablet + Mobile */
+		@media (max-width: 991px) {
+			.side-nav {
+				display: none;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="overlay-bg" id="overlay"></div>
+
+	<div class="container">
+		<div class="poster-stage" id="posterStage">
+			<div class="poster">
+				<img src="background_3.png" class="bg" alt="">
+				<div class="offers-text">Offers:</div>
+				<div class="content-wrapper" id="contentWrapper">
+					<div class=" zoom-section card-1">
+						<div class="early-flex">
+							<div class="logo-wrap">
+								<img src="logo_3.png" alt="Logo" class="early-logo1">
+							</div>
+							<div class="heading-wrap">
+								<h2 class="early-heading1">
+									<span class="indent-line1">Early relief of Symptoms &</span><br>
+
+									Normalization of liver enzymes
+								</h2>
+							</div>
+						</div>
+						<img src="graph_2.png" alt="Graph 1" class="graph-img-2">
+						<div class="medical" style="font-size: 10px;
+							margin-top: -4px;
+							display: flex;
+							justify-content: end;
+							margin-right: 18%;
+							color: white;">
+							La Presse Medical, vol, XV/N <sup>o</sup>5/September 1998
+						</div>
+					</div>
+
+					<div class="zoom-section card-2">
+						<div class="early-flex">
+							<div class="logo-wrap">
+								<img src="logo_3.png" alt="Logo" class="early-logo2">
+							</div>
+							<div class="heading-wrap">
+								<h2 class="early-heading2">
+									<span class="indent-line2">Improves virological outcome in non</span><br>
+									responders to standard treatment in CHC
+								</h2>
+							</div>
+						</div>
+						<img src="graph_1.png" alt="Graph 2" class="graph-img-1">
+						<h6 class="vol" style="font-size: 9px;
+							margin-top: -5px;
+							display: flex;
+							justify-content: right;
+							margin-right: 17%;
+							color: white;">
+							PLoS one vol. 5 /11 Nov.2010
+						</h6>
+					</div>
+
+					<div class="zoom-section card-3">
+						<div class="early-flex">
+							<div class="logo-wrap">
+								<img src="logo_3.png" alt="Logo" class="early-logo3">
+							</div>
+							<div class="heading-wrap">
+								<h2 class="early-heading3">
+									<span class="indent-line3">Proven to reduce Hepatocyte</span><br>
+									Inflammation, Homocystiene and Fibrosis
+								</h2>
+							</div>
+						</div>
+						<img src="graph_3.png" alt="Graph 3" class="graph-img-3">
+						<h6 class="vol-III" style="margin-right: 17%;
+							font-size: 9px;
+							margin-top: -5px;
+							display: flex;
+							justify-content: right;
+							color: white;">
+							S. Mukherjee et. al. sec. of Gast. & Hepatology University of Nebraska USA, Bentham Science
+							vol-III /2011
+					</div>
+					</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="side-nav">
+		<a href="index2.html" class="side-btn">❮</a>
+		<a href="index4.html" class="side-btn">❯</a>
+	</div>
+
+	<script>
+		(function () {
+			var stage = document.getElementById('posterStage');
+			var BASE_W = 756, BASE_H = 951;
+			var MAX_SCALE = 2.2;
+			// CHANGED: keep track of the current fit-scale so the slide-out
+			// transform (added later) can be combined with it instead of
+			// clobbering it.
+			var currentScale = 1;
+
+			function applyScale() {
+				var vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+				var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+				var scale = Math.min(vw / BASE_W, vh / BASE_H, MAX_SCALE);
+				currentScale = scale;
+				stage.style.transform = 'scale(' + scale + ')';
+
+				// Same scale value is used for the zoomed/active card
+				// (--zoomScale) so the popup always renders at the SAME
+				// size relative to the screen/poster on every device.
+				document.documentElement.style.setProperty('--zoomScale', scale);
+			}
+
+			applyScale();
+			window.addEventListener('resize', applyScale);
+			window.addEventListener('orientationchange', applyScale);
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener('resize', applyScale);
+			}
+			if (window.ResizeObserver) {
+				new ResizeObserver(applyScale).observe(document.body);
+			}
+
+			// Expose for goToPage below
+			window.__getCurrentScale = function () { return currentScale; };
+		})();
+
+
+		// ===== 2. ZOOM ON TAP/CLICK =====
+		// No per-card scale math needed anymore — the popped-out card is
+		// sized purely via CSS using var(--zoomScale), the exact same
+		// scale value the poster itself uses. This is what keeps the
+		// zoomed card the SAME relative size on every device.
+		document.addEventListener('DOMContentLoaded', function () {
+			var overlay = document.getElementById('overlay');
+			var contentWrapper = document.getElementById('contentWrapper');
+			var zoomElements = document.querySelectorAll('.zoom-section');
+			var placeholders = new Map();
+			var activeSection = null;
+
+			zoomElements.forEach(function (section) {
+				var placeholder = document.createComment('zoom-placeholder');
+				section.addEventListener('click', function (e) {
+					e.stopPropagation();
+					if (this.classList.contains('active')) {
+						closeZoom();
+					} else {
+						closeZoom();
+						this.parentNode.insertBefore(placeholder, this);
+						placeholders.set(this, placeholder);
+						document.body.appendChild(this);
+						this.classList.add('active');
+						activeSection = this;
+						overlay.classList.add('show');
+						contentWrapper.classList.add('dim-rest');
+					}
+				});
+			});
+
+			overlay.addEventListener('click', closeZoom);
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape') closeZoom();
+			});
+
+			function closeZoom() {
+				zoomElements.forEach(function (section) {
+					if (section.classList.contains('active')) {
+						section.classList.remove('active');
+						var ph = placeholders.get(section);
+						if (ph && ph.parentNode) {
+							ph.parentNode.replaceChild(section, ph);
+						}
+					}
+				});
+				activeSection = null;
+				overlay.classList.remove('show');
+				contentWrapper.classList.remove('dim-rest');
+			}
+		});
+
+		// CHANGED — id-based (this page uses #posterStage, not .poster),
+		// now slides in the correct direction just like the second page,
+		// while still respecting the JS-driven responsive scale.
+		const posterEl = document.getElementById('posterStage');
+
+		function goToPage(url, direction) {
+			if (!posterEl) {
+				window.location.href = url;
+				return;
+			}
+			var scale = window.__getCurrentScale ? window.__getCurrentScale() : 1;
+			var shiftX = direction === 'next' ? '-18%' : '18%';
+
+			// Combine the slide with the existing responsive scale so the
+			// poster doesn't "jump" size while it exits.
+			posterEl.style.transform = 'translateX(' + shiftX + ') scale(' + scale + ')';
+			posterEl.classList.add(direction === 'next' ? 'slide-out-left' : 'slide-out-right');
+
+			setTimeout(() => {
+				window.location.href = url;
+			}, 320); // matches the 0.35s CSS transition timing
+		}
+
+		let startX = 0;
+		let endX = 0;
+
+		document.addEventListener("touchstart", function (e) {
+			startX = e.changedTouches[0].clientX;
+		});
+
+		document.addEventListener("touchend", function (e) {
+			endX = e.changedTouches[0].clientX;
+
+			let distance = endX - startX;
+
+			// minimum swipe distance
+			if (Math.abs(distance) > 80) {
+
+				// Swipe Right -> Previous
+				if (distance > 0) {
+					goToPage("index2.html", "prev");
+				} else {
+					goToPage("index4.html", "next");
+				}
+			}
+		});
+	</script>
+
+
+</body>
+
+</html>

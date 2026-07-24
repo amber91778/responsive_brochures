@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+	<title>Neurotropic Effects of Hepatoprotectors</title>
+
+	<style>
+		:root {
+			--primary-blue: #1e64c8;
+			--dark-blue: #002d72;
+			--accent-yellow: #ffde00;
+			--jetepar-blue: #0288d1;
+			--poster-w: 756;
+			--poster-h: 934;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background: #000;
+		}
+
+		.container {
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		/* Poster box — size/ratio unchanged */
+		.poster {
+			position: relative;
+			aspect-ratio: var(--poster-w) / var(--poster-h);
+			width: min(100vw, calc(100vh * var(--poster-w) / var(--poster-h)));
+			height: min(100vh, calc(100vw * var(--poster-h) / var(--poster-w)));
+			background: linear-gradient(to bottom, var(--primary-blue) 0%, var(--primary-blue) 61%, #c3daff 89%, #ffffff 100%);
+			overflow: hidden;
+			/* NEW: smooth transition for swipe animation */
+			transition: transform 0.35s ease, opacity 0.35s ease;
+			will-change: transform, opacity;
+			animation: posterFadeIn 0.35s ease;
+		}
+
+		/* NEW: entry animation when page loads */
+		@keyframes posterFadeIn {
+			from {
+				opacity: 0;
+				transform: scale(0.97);
+			}
+
+			to {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+
+		/* NEW: classes toggled by JS right before navigating away */
+		.poster.slide-out-left {
+			transform: translateX(-18%);
+			opacity: 0;
+		}
+
+		.poster.slide-out-right {
+			transform: translateX(18%);
+			opacity: 0;
+		}
+
+		.watermark {
+			position: absolute;
+			left: 114px;
+			top: 49%;
+			transform: translateY(-50%) rotate(90deg);
+			font-size: 151px;
+			font-weight: 700;
+			color: #0b499d99;
+			letter-spacing: -14px;
+			pointer-events: none;
+			z-index: 1;
+			font-family: Arial, Helvetica, sans-serif;
+			white-space: nowrap;
+		}
+
+		.content-layer {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform-origin: center center;
+			width: 700px;
+			display: grid;
+			gap: 12px;
+			padding: 25px;
+			z-index: 2;
+		}
+
+		.header-title {
+			text-align: center;
+			color: var(--accent-yellow);
+			font-size: 37px;
+			font-weight: bold;
+			line-height: 1;
+			font-family: emoji;
+			margin-top: 1%;
+		}
+
+		.header-sub {
+			text-align: center;
+			color: var(--accent-yellow);
+			font-size: 19px;
+			margin: -5px;
+			font-family: emoji;
+		}
+
+		.authors {
+			font-size: 12px;
+			text-align: center;
+			line-height: 1.3;
+			cursor: zoom-in;
+		}
+
+		.purpose-bar {
+			background: #2c087a;
+			border-radius: 13px;
+			padding: 10px;
+			font-size: 14px;
+			text-align: center;
+			color: #fdff22;
+			cursor: zoom-in;
+			margin-left: -60px;
+			margin-top: -6px;
+			width: 636px;
+			padding-left: -3%;
+			padding-left: -13%;
+			font-family: arial, sans-serif;
+			word-spacing: 3px;
+		}
+
+		.section-label {
+			text-align: center;
+			font-weight: bold;
+			font-size: 21px;
+			color: #fff;
+			margin-top: 3%;
+			color: black;
+			font-family: system-ui;
+		}
+
+		.total-box {
+			background: #cc3333;
+			border-radius: 17px;
+			text-align: center;
+			font-size: 16px;
+			font-weight: bold;
+			color: white;
+			cursor: zoom-in;
+			border: 2px solid rgb(0 0 0);
+			margin-top: 1%;
+			margin-left: 16%;
+			margin-right: 7%;
+			padding-top: 1%;
+			padding-bottom: 1%;
+		}
+
+		.groups-row {
+			display: grid;
+			grid-template-columns: auto 1fr 1fr 1fr;
+			align-items: center;
+			gap: -55px;
+			margin-top: 3%;
+		}
+
+		.group-label {
+			color: white;
+			font-weight: bold;
+			font-size: 18px;
+			margin-left: 109%;
+		}
+
+		.group-item {
+			padding: 2px 0px;
+			border-radius: 10px;
+			font-size: 12px;
+			font-weight: bold;
+			text-align: center;
+			color: #2d2626;
+			min-height: 55px;
+			justify-content: center;
+			cursor: zoom-in;
+			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+			border: solid 2px white;
+			font-family: arial, sans-serif;
+			margin-left: 42%;
+			height: 25hv !important;
+			width: 55%;
+		}
+
+		.yellow-box {
+			background: #f3e356;
+		}
+
+		.blue-box {
+			background: #257bc2;
+			color: white;
+			margin-left: 18%;
+		}
+
+		.green-box {
+			background: #a0d0a2;
+			margin-left: -5%;
+			padding-top: 4%;
+			padding-bottom: 5%;
+		}
+
+		.params-box {
+			background: #bbdefb;
+			color: #000;
+			border-radius: 10px;
+			padding: 5px;
+			font-size: 11px;
+			font-weight: bold;
+			cursor: zoom-in;
+			margin-left: 10%;
+			margin-top: 4%;
+			margin-right: 3%;
+		}
+
+		.param-row {
+			display: flex;
+			align-items: flex-start;
+			margin-bottom: 4px;
+			font-family: arial, sans-serif;
+		}
+
+		.label {
+			width: 80px;
+			font-weight: bold;
+			font-size: 16px;
+			margin-top: 10px;
+			margin-left: 4%;
+		}
+
+		.content {
+			flex: 1;
+			margin-left: 5%;
+			color: #3e2595;
+			font-size: 13px;
+			line-height: 1.5;
+			font-weight: 800;
+		}
+
+		.result-img {
+			width: 80%;
+			height: auto;
+			border-radius: 30px;
+			border: 2px solid black;
+			cursor: zoom-in;
+			display: block;
+			margin-top: 3%;
+			margin-left: 12%;
+		}
+
+		.footer-text {
+			color: #333;
+			font-size: 12px;
+			line-height: 1.2;
+			cursor: zoom-in;
+			font-weight: 600;
+			padding: 10px;
+			border-radius: 8px;
+			margin-top: 2%;
+			font-family: arail, sans-serif;
+		}
+
+		.brand-name {
+			position: absolute;
+			right: 4%;
+			bottom: 1.6%;
+			transform-origin: bottom right;
+			color: #0995e0;
+			text-align: right;
+			font-weight: 900;
+			font-size: 22px;
+			font-family: arial, sans-serif;
+			letter-spacing: -2px;
+			z-index: 10002;
+			pointer-events: none;
+			margin: 0;
+		}
+
+		.side-nav {
+			position: fixed;
+			bottom: max(16px, env(safe-area-inset-bottom));
+			left: 0;
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 20px;
+			box-sizing: border-box;
+			pointer-events: none;
+			z-index: 100;
+		}
+
+		.side-btn {
+			pointer-events: auto;
+			background: rgba(255, 255, 255, 0.2);
+			border: 2px solid white;
+			color: white;
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			text-decoration: none;
+			transition: 0.3s;
+		}
+
+		.side-btn:hover {
+			background: rgba(255, 255, 255, 0.4);
+		}
+
+		#zoom-overlay {
+			display: none;
+			position: fixed;
+			inset: 0;
+			z-index: 9998;
+		}
+
+		#zoom-overlay.show {
+			display: block;
+		}
+
+		.content-layer.zoomed>*:not(.header-title):not(.header-sub):not(.brand-name):not(.authors-active):not(.purpose-bar-active):not(.total-box-active):not(.group-item-active):not(.params-box-active):not(.result-img-active):not(.footer-text-active) {
+			visibility: hidden !important;
+			pointer-events: none !important;
+		}
+
+		.content-layer.zoomed .header-title,
+		.content-layer.zoomed .header-sub {
+			position: relative !important;
+			z-index: 10001 !important;
+		}
+
+		.total-box hr {
+			border: none !important;
+			height: 2px !important;
+			background-color: white !important;
+			opacity: 1 !important;
+
+		}
+
+		.tight {
+			letter-spacing: -1px;
+		}
+
+		.jetepar {
+			color: #0995e0;
+			font-weight: 900;
+		}
+
+		.authors-active {
+			display: block !important;
+			visibility: visible !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 123% !important;
+			max-width: 680px !important;
+			/* background: #ffffff !important; */
+			color: #111 !important;
+			font-size: 20px !important;
+			line-height: 1.6 !important;
+			padding: 24px !important;
+			border-radius: 14px !important;
+			/* box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important; */
+			/* border: 3px solid var(--primary-blue) !important; */
+			font-weight: bold;
+		}
+
+		.purpose-bar-active {
+			display: block !important;
+			visibility: visible !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 119% !important;
+			max-width: 669px !important;
+			background: #2c087a !important;
+			color: #fdff22 !important;
+			font-size: 17px !important;
+			line-height: 1.5 !important;
+			padding: 28px !important;
+			border-radius: 20px !important;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
+			margin: 0 !important;
+
+
+
+		}
+
+		.total-box-active {
+			display: block !important;
+			visibility: visible !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 120% !important;
+			max-width: 661px !important;
+			background: #cc3333 !important;
+			color: #fff !important;
+			font-size: 25px !important;
+			border-radius: 22px !important;
+			border: 3px solid #000 !important;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
+			margin: 0 !important;
+			padding-top: 4%;
+			padding-bottom: 4%;
+
+		}
+
+		.group-item-active {
+			display: flex !important;
+			visibility: visible !important;
+			flex-direction: column !important;
+			align-items: center !important;
+			justify-content: center !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 70% !important;
+			max-width: 320px !important;
+			min-height: 200px !important;
+			font-size: 36px !important;
+			padding: 30px !important;
+			border-radius: 24px !important;
+			border: 4px solid #fff !important;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
+			margin: 0 !important;
+		}
+
+		.params-box-active {
+			display: block !important;
+			visibility: visible !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 99% !important;
+			max-width: 647px !important;
+			background: #bbdefb !important;
+			font-size: 16px !important;
+			padding: 26px !important;
+			border-radius: 18px !important;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
+			margin: 0 !important;
+		}
+
+		.params-box-active .label {
+			font-size: 21px !important;
+			margin-top: 5%;
+			margin-left: 1%;
+		}
+
+		.params-box-active .content {
+			font-size: 16px !important;
+			margin-left: 10%;
+		}
+
+		.result-img-active {
+			display: block !important;
+			visibility: visible !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 100% !important;
+			max-width: 604px !important;
+			height: 39% !important;
+			border-radius: 26px !important;
+			border: 4px solid #fff !important;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+			margin: 0 !important;
+		}
+
+		.footer-text-active {
+			display: block !important;
+			visibility: visible !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 100% !important;
+			max-width: 636px !important;
+			max-height: 75vh !important;
+			overflow-y: auto !important;
+			background: #ffffff !important;
+			color: #222 !important;
+			font-size: 18px !important;
+			line-height: 1.5 !important;
+			padding: 26px !important;
+			border-radius: 18px !important;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+			margin: 0 !important;
+		}
+
+		.jetepar-name {
+			display: block;
+			color: white;
+			font-size: 14px;
+			font-weight: 900;
+		}
+
+		.group-item-active .jetepar-name {
+			font-size: 50px !important;
+			line-height: 1;
+			color: white;
+		}
+
+
+		/* Desktop */
+		.side-nav {
+			display: flex;
+		}
+
+		/* Tablet + Mobile */
+		@media (max-width: 991px) {
+			.side-nav {
+				display: none;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<div id="zoom-overlay" onclick="closeZoom()"></div>
+
+	<div class="container">
+
+		<div class="poster">
+			<div class="watermark" id="watermark">JETEPAR</div>
+
+			<div class="content-layer" id="contentLayer">
+				<h1 class="header-title">Neurotropic Effects of <br>Hepatoprotectors</h1>
+				<p class="header-sub">During Alcohol Poisoning</p>
+
+				<div class="authors" onclick="zoomItem(this, 'authors-active')">
+					<b>Rustam N. Akalaev, Visolathon Kh. Sharipova, amir A. Stopnitsky, Khusnitdin Sh. Khodzhiev<br>
+						Republican Research Centre of Emergency Medicine,<br>2 Farhad Str., Chilanzar district,
+						100115 Tashkent, Republic of Uzbekistan <br>
+						Tashkent Medical Refresher Institute <br> 51A Parkentskaya Str., 100007 Tashkent, Republic
+						of Uzbekistan
+				</div>
+
+				<div class="purpose-bar" onclick="zoomItem(this, 'purpose-bar-active')">
+					<strong>Purpose:</strong> To compare the efficacy of metabolic hepatoprotectors at an <br>early
+					stage of acute alcohol poisoning complicated by toxic hepatitis.
+				</div>
+
+				<div class="section-label">Material and Methods</div>
+
+				<div class="total-box" onclick="zoomItem(this, 'total-box-active')">
+					Total 80 Patients
+					<hr style="margin-top: 1%; margin-bottom: 1%;">
+					Acute Alcohol Poisoning Complicated by Toxic Hepatitis
+				</div>
+
+				<div class="groups-row">
+					<span class="group-label">Groups</span>
+					<div class="group-item yellow-box" onclick="zoomItem(this, 'group-item-active')">30<br>Amino Acids
+						<br>+standard <br>
+						treatment
+
+					</div>
+					<div class="group-item blue-box" onclick="zoomItem(this, 'group-item-active')"
+						style="color: black;">
+						20<br>
+						<span class="jetepar-name">JETEPAR</span>
+						+standard<br>
+						treatment
+					</div>
+					<div class="group-item green-box" onclick="zoomItem(this, 'group-item-active')">
+						30<br>standard<br>treatment</div>
+				</div>
+
+				<div class="params-box" onclick="zoomItem(this, 'params-box-active')">
+					<div class="param-row">
+						<div class="label">Parameters:</div>
+						<div class="content">
+							1) Liver Enzymes, Bilirubin, Free Ammonia, Blood Lactate
+							<br>
+							2) Psychoastenics: MMSE Score, FAB Score, Reitan Test
+
+
+						</div>
+					</div>
+
+				</div>
+
+				<img src="base_line_graph.png" class="result-img" onclick="zoomItem(this, 'result-img-active')"
+					alt="Results Chart" id="resultImg">
+
+				<div class="footer-text" onclick="zoomItem(this, 'footer-text-active')">
+					As determined by the Reitan test that established level of hepatic encephalopathy,
+					<b>The best therapeutic effect was found in patients who received</b> <span class="jetepar">
+						J<span class="tight">ET</span><span class="normal">EPAR</span>
+					</span>
+					<br><br>
+					<strong>Conclusion:</strong> The drug used in group <strong>I</strong> possessed increased
+					antihypoxant properties but smaller hepatoprotective properties than the drug used in group
+					<strong>II.</strong> <span style="color:#009aee">When signs of toxic hepatitis are
+						predominant, it would be more preferable to used the drug applied in group II</span>
+					<span style="color:#009aee;">
+						(<span class="jetepar">
+							J<span class="tight">ET</span><span class="normal">EPAR</span>
+						</span>)
+					</span> and when the signs of tissue hypoxia and predominent the drug applied in group I
+					shoud
+					be used.
+				</div>
+
+			</div>
+
+			<p class="brand-name" id="brandName">JETEPAR</p>
+
+		</div>
+	</div>
+
+	<div class="side-nav">
+		<a href="index4.html" class="side-btn">❮</a>
+		<a href="index5.html" class="side-btn">❯</a>
+	</div>
+
+	</div>
+
+	<script>
+		function zoomItem(el, activeClass) {
+			var alreadyActive = el.classList.contains(activeClass);
+			closeZoom();
+			if (alreadyActive) {
+				return; // second click on the same item just closes it
+			}
+			el.classList.add(activeClass);
+			el.dataset.activeClass = activeClass;
+			document.getElementById('contentLayer').classList.add('zoomed');
+			document.getElementById('zoom-overlay').classList.add('show');
+		}
+
+		function closeZoom() {
+			document.querySelectorAll('[data-active-class], .authors-active, .purpose-bar-active, .total-box-active, .group-item-active, .params-box-active, .result-img-active, .footer-text-active')
+				.forEach(function (e) {
+					e.classList.remove('authors-active', 'purpose-bar-active', 'total-box-active', 'group-item-active', 'params-box-active', 'result-img-active', 'footer-text-active');
+					delete e.dataset.activeClass;
+				});
+			document.getElementById('contentLayer').classList.remove('zoomed');
+			document.getElementById('zoom-overlay').classList.remove('show');
+		}
+
+		/* Scale + center the content-layer so the WHOLE thing always
+		   fits fully inside the poster box (which itself keeps its
+		   given size/ratio, untouched) — on every device, every
+		   orientation, with zero scrolling. */
+		function fitContent() {
+			var poster = document.querySelector('.poster');
+			var layer = document.getElementById('contentLayer');
+			var brand = document.getElementById('brandName');
+
+			// reset to measure the natural (unscaled) size at the reference width
+			layer.style.transform = 'translate(-50%, -50%) scale(1)';
+
+			var natW = layer.offsetWidth;
+			var natH = layer.offsetHeight;
+
+			var pw = poster.clientWidth;
+			var ph = poster.clientHeight;
+
+			if (!natW || !natH || !pw || !ph) return;
+
+			var scale = Math.min(pw / natW, ph / natH);
+			scale = Math.max(scale, 0.05);
+
+			layer.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+
+			if (brand) {
+				brand.style.transform = 'scale(' + scale + ')';
+			}
+
+			updateWatermark(pw, ph);
+		}
+
+		var WATERMARK_REF_WIDTH = 756;   // poster's native design width (matches aspect-ratio: 756/1068)
+		var WATERMARK_REF_LEFT = -392;    // original left offset at that reference width
+		var WATERMARK_REF_FONT = 245;    // original font-size at that reference width
+		var WATERMARK_REF_TRACK = -23;   // original letter-spacing at that reference width
+
+		function updateWatermark(pw, ph) {
+			var watermark = document.getElementById('watermark');
+			if (!watermark || !pw) return;
+
+			var ratio = pw / WATERMARK_REF_WIDTH;
+
+			watermark.style.left = (WATERMARK_REF_LEFT * ratio) + 'px';
+			watermark.style.fontSize = (WATERMARK_REF_FONT * ratio) + 'px';
+			watermark.style.letterSpacing = (WATERMARK_REF_TRACK * ratio) + 'px';
+			watermark.style.transform = 'translateY(-50%) rotate(90deg)';
+		}
+
+		window.addEventListener('load', fitContent);
+		window.addEventListener('resize', fitContent);
+		window.addEventListener('orientationchange', function () {
+			setTimeout(fitContent, 50);
+		});
+
+		// re-fit once the chart image finishes loading (it changes content height)
+		var resultImg = document.getElementById('resultImg');
+		if (resultImg) {
+			if (resultImg.complete) {
+				fitContent();
+			} else {
+				resultImg.addEventListener('load', fitContent);
+				resultImg.addEventListener('error', fitContent);
+			}
+		}
+
+		if (window.ResizeObserver) {
+			var ro = new ResizeObserver(fitContent);
+			ro.observe(document.querySelector('.poster'));
+		}
+
+		fitContent();
+
+		// NEW — smooth navigation with slide + fade
+		const posterEl = document.querySelector('.poster');
+
+		function goToPage(url, direction) {
+			if (!posterEl) {
+				window.location.href = url;
+				return;
+			}
+			posterEl.classList.add(direction === "next" ? "slide-out-left" : "slide-out-right");
+			setTimeout(() => {
+				window.location.href = url;
+			}, 320);
+		}
+
+		let startX = 0;
+		let endX = 0;
+
+		document.addEventListener("touchstart", function (e) {
+			startX = e.changedTouches[0].clientX;
+		});
+
+		document.addEventListener("touchend", function (e) {
+			endX = e.changedTouches[0].clientX;
+
+			let distance = endX - startX;
+
+			// minimum swipe distance
+			if (Math.abs(distance) > 80) {
+
+				// Swipe Right -> Previous
+				if (distance > 0) {
+					goToPage("index4.html", "prev"); // CHANGED
+				}
+
+				// Swipe Left -> Next
+				else {
+					goToPage("index5.html", "next"); // CHANGED
+				}
+			}
+		});
+	</script>
+
+</body>
+
+</html>

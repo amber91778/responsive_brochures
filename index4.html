@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+	<meta name="view-transition" content="same-origin">
+	<title>JETEPAR® – Liver Health Infographic</title>
+	<style>
+		/* Native cross-document smooth navigation (Chrome/Edge 126+).
+		   This is what actually removes the white "blink" between page loads.
+		   Browsers that don't support it simply ignore this rule — no harm done. */
+		@view-transition {
+			navigation: auto;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			-webkit-tap-highlight-color: transparent;
+			-webkit-text-size-adjust: 100%;
+			text-size-adjust: 100%;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			height: 100dvh;
+			overflow: hidden;
+			background: #000;
+			overscroll-behavior: none;
+			touch-action: pan-x pan-y;
+		}
+
+		.container {
+			width: 100vw;
+			width: 100dvw;
+			height: 100vh;
+			height: 100dvh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+		}
+
+		.poster-stage {
+			position: relative;
+			width: 756px;
+			height: 951px;
+			transform-origin: center center;
+			flex-shrink: 0;
+			/* CHANGED: transform + opacity both transition now, so slide-out works
+			   the same way it does on the other pages (JS still sets scale via
+			   inline style — see script at the bottom). */
+			transition: transform 0.35s ease, opacity 0.35s ease;
+			will-change: transform, opacity;
+			animation: posterFadeIn 0.35s ease;
+		}
+
+		/* fade-in when page loads */
+		@keyframes posterFadeIn {
+			from {
+				opacity: 0;
+			}
+
+			to {
+				opacity: 1;
+			}
+		}
+
+		/* CHANGED: same slide-out-left / slide-out-right classes used across
+		   the other pages, applied by JS right before navigating. */
+		.poster-stage.slide-out-left {
+			opacity: 0;
+		}
+
+		.poster-stage.slide-out-right {
+			opacity: 0;
+		}
+
+		.poster {
+			position: relative;
+			width: 756px;
+			height: 951px;
+			overflow: hidden;
+			--pw: 756px;
+			--ph: 951px;
+		}
+
+		.poster .bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: block;
+			z-index: 0;
+			object-fit: cover;
+		}
+
+		.content-wrapper {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			z-index: 2;
+			overflow: hidden;
+		}
+
+		.content-wrapper.dim-rest {
+			visibility: hidden;
+		}
+
+		.content-wrapper,
+		.card,
+		img {
+			position: relative;
+			z-index: 2;
+		}
+
+
+		.zoom-section {
+			width: 100%;
+			cursor: zoom-in;
+			z-index: 2;
+			margin-top: 190px;
+			color: white;
+			font-family: arial, sans-serif;
+			margin-left: 6%;
+			touch-action: manipulation;
+		}
+
+		.star-bullets ul {
+			list-style: none;
+			padding: 0;
+		}
+
+		.star-bullets li {
+			font-size: 20px;
+			font-weight: 100;
+			position: relative;
+			padding-left: 46px;
+			margin-bottom: 8px;
+			line-height: 1.25;
+			font-family: sans-serif;
+		}
+
+		.star-bullets li::before {
+			content: "🟏";
+			position: absolute;
+			left: 11px;
+			color: #ffff00;
+		}
+
+		.liver-disorders-container {
+			background: white;
+			border-radius: 9px;
+			padding: 10px 20px;
+			width: 100%;
+			max-width: 499px;
+			margin: 2px auto;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			box-sizing: border-box;
+			margin-right: 18%;
+			margin-left: 17%;
+			touch-action: manipulation;
+		}
+
+		.blue-bullet-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.blue-bullet-list li {
+			width: 50%;
+			font-size: 15px;
+			font-weight: bold;
+			color: #333;
+			padding-left: 23px;
+			margin-bottom: 10px;
+			position: relative;
+			box-sizing: border-box;
+			line-height: 1.19;
+			font-family: sans-serif;
+		}
+
+		.blue-bullet-list li::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 4px;
+			width: 16px;
+			height: 16px;
+			background-color: #216ad3;
+			border-radius: 50%;
+		}
+
+		.center-item {
+			width: 100% !important;
+			text-align: center;
+			padding-left: 0 !important;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.center-item::before {
+			position: static !important;
+			display: inline-block;
+			content: "";
+			margin-right: 8px;
+			width: 8px;
+			height: 8px;
+			background-color: #216ad3;
+			border-radius: 50%;
+			flex-shrink: 0;
+		}
+
+		.zoom-trigger {
+			cursor: zoom-in;
+			background: white;
+			border-radius: 9px;
+			width: 100%;
+			max-width: 498px;
+			margin: 12px auto;
+			height: 173px;
+			touch-action: manipulation;
+			object-position: center;
+			display: block;
+		}
+
+		.zoom-trigger-dosage {
+			cursor: zoom-in;
+			background: white;
+			border-radius: 9px;
+			width: 100%;
+			max-width: 496px;
+			margin: 4px auto;
+			height: 140px;
+			touch-action: manipulation;
+			object-position: center;
+			display: block;
+		}
+
+		.footer-logos {
+			margin-top: auto;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding-bottom: 19px;
+			position: relative;
+			z-index: 3;
+			flex-shrink: 0;
+		}
+
+		.footer-logos img {
+			max-width: 465px;
+			margin-left: 59px;
+			align-self: flex-start;
+			margin-top: 236px;
+		}
+
+		.logo-item {
+			max-width: 94px;
+			width: 28%;
+			height: auto;
+		}
+
+		.mylan-logo {
+			position: absolute;
+			right: 7%;
+			top: -323px;
+			width: 442px !important;
+			max-width: 130px;
+			height: 91px !important;
+		}
+
+		.zoom-section.active {
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			width: min(90vw, 460px) !important;
+			max-width: 480px !important;
+			max-height: 90dvh !important;
+			overflow-y: auto !important;
+			border-radius: 20px;
+			z-index: 10000 !important;
+			margin: 0 !important;
+			visibility: visible !important;
+		}
+
+		.zoom-section.active .star-bullets li {
+			font-size: clamp(13px, 3.6vw, 16px) !important;
+			color: white !important;
+			margin-bottom: 16px;
+			display: flex;
+			align-items: flex-start;
+		}
+
+		.zoom-section.active .star-bullets li::before {
+			position: static !important;
+			margin-right: 12px;
+			margin-top: 4px;
+			flex-shrink: 0;
+		}
+
+		.liver-disorders-container.active {
+			position: fixed !important;
+			top: 50% !important;
+			left: 33% !important;
+			transform: translate(-50%, -50%) !important;
+			width: min(92vw, 450px) !important;
+			max-width: 470px !important;
+			max-height: 90dvh !important;
+			overflow-y: auto !important;
+			background: white !important;
+			padding: clamp(14px, 3.5vw, 22px) !important;
+			border-radius: 20px;
+			z-index: 10000 !important;
+			box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+			visibility: visible !important;
+		}
+
+		.liver-disorders-container.active .blue-bullet-list li {
+			color: black !important;
+			font-size: clamp(12px, 3.2vw, 13px) !important;
+			margin-bottom: 16px;
+			display: flex;
+			align-items: flex-start;
+			line-height: 1.15;
+			padding-left: 0%;
+		}
+
+		.liver-disorders-container.active .blue-bullet-list li::before {
+			position: static !important;
+			margin-right: 10px;
+			margin-top: 6px;
+			flex-shrink: 0;
+			width: 12px;
+			height: 12px;
+		}
+
+		.liver-disorders-container.active .center-item {
+			width: 100% !important;
+			justify-content: center;
+			margin-top: 10px;
+		}
+
+		.zoom-trigger.active {
+			position: fixed !important;
+			top: 52% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			width: min(88vw, 440px) !important;
+			max-width: 460px !important;
+			max-height: 90vh !important;
+			height: 39% !important;
+			background: white !important;
+			border-radius: 15px;
+			z-index: 10000 !important;
+			margin: 0 !important;
+			visibility: visible !important;
+		}
+
+		.zoom-trigger-dosage.active {
+			position: fixed !important;
+			top: 52% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			width: min(92vw, 450px) !important;
+			max-width: 470px !important;
+			max-height: 90dvh !important;
+			height: 32% !important;
+			border-radius: 15px;
+			z-index: 10000 !important;
+			margin: 0 !important;
+			visibility: visible !important;
+		}
+
+		.overlay-bg {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9998;
+
+		}
+
+		.overlay-bg.show {
+			display: block;
+		}
+
+		.side-nav {
+			position: fixed;
+			bottom: max(16px, env(safe-area-inset-bottom));
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 clamp(10px, 3vw, 20px);
+			box-sizing: border-box;
+			pointer-events: none;
+			z-index: 9999;
+		}
+
+		.side-btn {
+			pointer-events: auto;
+			background: rgba(0, 0, 0, 0.5);
+			border: 2px solid white;
+			color: white;
+			width: clamp(38px, 9vw, 50px);
+			height: clamp(38px, 9vw, 50px);
+			border-radius: 50%;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			touch-action: manipulation;
+		}
+
+		.arrow-icon {
+			border: solid white;
+			border-width: 0 3px 3px 0;
+			padding: 5px;
+			display: inline-block;
+		}
+
+		.left {
+			transform: rotate(135deg);
+		}
+
+		.right {
+			transform: rotate(-45deg);
+		}
+
+		/* Desktop */
+		.side-nav {
+			display: flex;
+		}
+
+		/* Tablet + Mobile */
+		@media (max-width: 991px) {
+			.side-nav {
+				display: none;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="overlay-bg" id="overlay"></div>
+
+	<div class="container">
+		<div class="poster-stage" id="posterStage">
+			<div class="poster">
+
+				<img src="background_4.png" class="bg" alt="">
+
+				<div class="content-wrapper" id="contentWrapper">
+
+					<div class="zoom-section" id="zoomStar">
+						<div class="star-bullets">
+							<ul>
+								<li>Improves hepatic Functionality and liver enzymes</li>
+								<li>Enhances Virological / Metabolic outcomes</li>
+								<li>Protects liver from damages and Fibrosis</li>
+								<li>Backed by proven scientific publications</li>
+								<li>Available in complete range at most affordable cost</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="liver-disorders-container" id="zoomDisorders">
+						<ul class="blue-bullet-list">
+							<li>Acute & Chronic Hepatitis</li>
+							<li style="margin-left: 0px;">Fatty Liver Disease</li>
+							<li>Liver Cirrhosis</li>
+							<li>Cholecystitis</li>
+							<li>Toxic Ingestion</li>
+							<li>Toxic Metabolic Hepatopathy</li>
+							<li class="center-item">Dili - Drug Induced Liver Injuries</li>
+						</ul>
+					</div>
+
+					<img src="jetepar_img.jpg" class="zoom-trigger" id="zoomProduct" alt="Product Image">
+					<img src="dosage_img.png" class="zoom-trigger-dosage" id="zoomDosage" alt="Dosage Info">
+
+					<div class="footer-logos">
+						<img src="rottapharm_img.png" alt="Rottapharm Logo" class="logo-item" style="margin-top: -10%;">
+						<img src="mylan_footer_img.png" alt="Mylan Logo" class="logo-item mylan-logo">
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="side-nav">
+		<a href="index3.html" class="side-btn">❮</a>
+		<a href="index5.html" class="side-btn">❯</a>
+	</div>
+
+	<script>
+
+		(function () {
+			var stage = document.getElementById('posterStage');
+			var BASE_W = 756, BASE_H = 951;
+			var MAX_SCALE = 2.2;
+			// CHANGED: keep track of the current fit-scale so the slide-out
+			// transform (added later) can be combined with it instead of
+			// clobbering it.
+			var currentScale = 1;
+
+			function applyScale() {
+				var vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+				var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+				var scale = Math.min(vw / BASE_W, vh / BASE_H, MAX_SCALE);
+				currentScale = scale;
+				stage.style.transform = 'scale(' + scale + ')';
+			}
+
+			applyScale();
+			window.addEventListener('resize', applyScale);
+			window.addEventListener('orientationchange', applyScale);
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener('resize', applyScale);
+			}
+			if (window.ResizeObserver) {
+				new ResizeObserver(applyScale).observe(document.body);
+			}
+
+			// Expose for goToPage below
+			window.__getCurrentScale = function () { return currentScale; };
+		})();
+
+
+		document.addEventListener('DOMContentLoaded', function () {
+			var overlay = document.getElementById('overlay');
+			var contentWrapper = document.getElementById('contentWrapper');
+			var zoomElements = document.querySelectorAll(
+				'#zoomStar, #zoomProduct, #zoomDosage, #zoomDisorders'
+			);
+			var placeholders = new Map();
+
+			zoomElements.forEach(function (el) {
+				var placeholder = document.createComment('zoom-placeholder');
+				el.addEventListener('click', function (e) {
+					e.stopPropagation();
+					if (this.classList.contains('active')) {
+						closeZoom();
+					} else {
+						closeZoom();
+						this.parentNode.insertBefore(placeholder, this);
+						placeholders.set(this, placeholder);
+						document.body.appendChild(this);
+						this.classList.add('active');
+						overlay.classList.add('show');
+						// hide everything else that's still inside the poster
+						contentWrapper.classList.add('dim-rest');
+					}
+				});
+			});
+
+			overlay.addEventListener('click', closeZoom);
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape') closeZoom();
+			});
+
+			function closeZoom() {
+				zoomElements.forEach(function (el) {
+					if (el.classList.contains('active')) {
+						el.classList.remove('active');
+						var ph = placeholders.get(el);
+						if (ph && ph.parentNode) {
+							ph.parentNode.replaceChild(el, ph);
+						}
+					}
+				});
+				overlay.classList.remove('show');
+				// show the rest of the poster again
+				contentWrapper.classList.remove('dim-rest');
+			}
+		});
+
+		// CHANGED — id-based (this page uses #posterStage, not .poster),
+		// now slides in the correct direction just like the other pages,
+		// while still respecting the JS-driven responsive scale.
+		const posterEl = document.getElementById('posterStage');
+
+		function goToPage(url, direction) {
+			if (!posterEl) {
+				window.location.href = url;
+				return;
+			}
+			var scale = window.__getCurrentScale ? window.__getCurrentScale() : 1;
+			var shiftX = direction === 'next' ? '-18%' : '18%';
+
+			// Combine the slide with the existing responsive scale so the
+			// poster doesn't "jump" size while it exits.
+			posterEl.style.transform = 'translateX(' + shiftX + ') scale(' + scale + ')';
+			posterEl.classList.add(direction === 'next' ? 'slide-out-left' : 'slide-out-right');
+
+			setTimeout(() => {
+				window.location.href = url;
+			}, 320);
+		}
+
+		let startX = 0;
+		let endX = 0;
+
+		document.addEventListener("touchstart", function (e) {
+			startX = e.changedTouches[0].clientX;
+		});
+
+		document.addEventListener("touchend", function (e) {
+			endX = e.changedTouches[0].clientX;
+
+			let distance = endX - startX;
+
+			// minimum swipe distance
+			if (Math.abs(distance) > 80) {
+
+				// Swipe Right -> Previous
+				if (distance > 0) {
+					goToPage("index3.html", "prev");
+				}
+
+				// Swipe Left -> Next
+				else {
+					goToPage("index5.html", "next");
+				}
+			}
+		});
+	</script>
+
+</body>
+
+</html>
