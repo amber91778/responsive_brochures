@@ -178,7 +178,7 @@
 		.early-heading1,
 		.early-heading2,
 		.early-heading3 {
-			font-size: 21px;
+			font-size: 19px;
 			flex: 1;
 			letter-spacing: 1.9px;
 			text-align: left;
@@ -193,11 +193,11 @@
 
 		.early-heading2 {
 			margin-top: 9%;
-			margin-left: 7%;
+			margin-left: 12%;
 		}
 
 		.early-heading3 {
-			margin-left: 6%;
+			margin-left: 12%;
 			margin-top: 7%;
 		}
 
@@ -314,7 +314,7 @@
 		}
 
 		.zoom-section.active .vol-III {
-			font-size: 11px !important;
+			font-size: 10px !important;
 			font-family: sans-serif;
 			margin-right: 3% !important;
 		}
@@ -359,13 +359,27 @@
 		}
 
 		.card-2.active .early-heading2 {
-			font-size: 27px;
-			margin-left: 8%;
+			font-size: 24px;
+			margin-left: 9%;
 		}
 
 		.card-3.active .early-heading3 {
-			font-size: 27px;
-			margin-left: 8%;
+			font-size: 23px;
+			margin-left: 10%;
+		}
+
+
+		html.is-apk .card-1.active {
+			position: fixed !important;
+			top: 44%;
+			left: 48%;
+			width: 774px;
+			margin: 0;
+			z-index: 9999;
+			cursor: zoom-out;
+			background: #0b2e6300;
+			border-radius: 20px;
+			transform: translate(-50%, -50%) scale(var(--zoomScale));
 		}
 
 
@@ -411,31 +425,10 @@
 		}
 
 
-		@media (max-height:700px) {
-			.card-1.active {
-				transform: translate(-50%, -48%) scale(var(--zoomScale));
-			}
-		}
-
-
-
-		@media (max-height:600px) {
-			.card-1.active {
-				transform: translate(-50%, -46%) scale(var(--zoomScale));
-			}
-		}
-
-
-		@media (max-height:500px) {
-			.card-1.active {
-				transform: translate(-50%, -48%) scale(var(--zoomScale));
-			}
-		}
-
 		/* 400px - 312px */
 		@media (max-height:400px) {
 			.card-1.active {
-				transform: translate(-50%, -42%) scale(var(--zoomScale));
+				transform: translate(-50%, -43%) scale(var(--zoomScale));
 			}
 		}
 
@@ -483,7 +476,7 @@
 							margin-right: 18%;
 							color: white;">
 							La Presse Medical, vol. XV/N <sup style="margin-top: -4px;
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 1px;
     margin-left: 1px;">o</sup>5/September
 							1998
@@ -527,7 +520,7 @@
 						</div>
 						<img src="graph_3.png" alt="Graph 3" class="graph-img-3">
 						<h6 class="vol-III" style="margin-right: 17%;
-							font-size: 9px;
+							font-size: 8px;
 							margin-top: -5px;
 							display: flex;
 							justify-content: right;
@@ -547,6 +540,32 @@
 	</div>
 
 	<script>
+
+		var IS_ANDROID_WEBVIEW = /Android.*wv\)/i.test(navigator.userAgent);
+		if (IS_ANDROID_WEBVIEW) {
+			document.documentElement.classList.add('is-apk');
+		}
+		// Safe prefetch (link only, no fetch()) — kept consistent with other
+		// pages. fetch() is intentionally NOT used because it gets blocked
+		// on file:// pages inside Android WebView/APK builds and can cause
+		// black/blank screens on navigation.
+		(function () {
+			function prefetchPage(url) {
+				if (!url) return;
+
+				var l = document.createElement('link');
+				l.rel = 'prefetch';
+				l.href = url;
+				document.head.appendChild(l);
+			}
+
+			document.addEventListener('DOMContentLoaded', function () {
+				document.querySelectorAll('.side-nav a.side-btn').forEach(function (a) {
+					prefetchPage(a.getAttribute('href'));
+				});
+			});
+		})();
+
 		(function () {
 			var stage = document.getElementById('posterStage');
 			var BASE_W = 756, BASE_H = 951;

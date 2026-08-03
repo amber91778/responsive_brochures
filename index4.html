@@ -142,19 +142,21 @@
 
 		.star-bullets li {
 			font-size: 20px;
-			font-weight: 100;
 			position: relative;
 			padding-left: 46px;
 			margin-bottom: 8px;
 			line-height: 1.25;
-			font-family: sans-serif;
 		}
 
 		.star-bullets li::before {
-			content: "🟏";
+			content: "";
 			position: absolute;
 			left: 11px;
-			color: #ffff00;
+			top: 1px;
+			width: 22px;
+			height: 24px;
+			background: url(star.png) no-repeat center;
+			background-size: contain;
 		}
 
 		.liver-disorders-container {
@@ -181,7 +183,7 @@
 
 		.blue-bullet-list li {
 			width: 50%;
-			font-size: 15px;
+			font-size: 13px;
 			font-weight: bold;
 			color: #333;
 			padding-left: 23px;
@@ -287,7 +289,7 @@
 		.zoom-section.active {
 			position: fixed !important;
 			top: 50% !important;
-			left: 48% !important;
+			left: 50% !important;
 			transform: translate(-50%, -50%) !important;
 			width: min(112vw, 403px) !important;
 			max-width: 446px !important;
@@ -300,18 +302,23 @@
 		}
 
 		.zoom-section.active .star-bullets li {
-			font-size: clamp(9px, 3.6vw, 14px) !important;
+			font-size: clamp(9px, 3vw, 13px) !important;
 			color: white !important;
-			margin-bottom: 16px;
 			display: flex;
-			align-items: flex-start;
+			align-items: center;
+			margin-bottom: 10px;
 		}
 
 		.zoom-section.active .star-bullets li::before {
+			content: "";
 			position: static !important;
-			margin-right: 12px;
-			margin-top: 4px;
+			width: clamp(14px, 4.5vw, 20px);
+			height: clamp(14px, 4.5vw, 20px);
+			margin-right: 10px;
+			margin-top: 0;
 			flex-shrink: 0;
+			background: url(star.png) no-repeat center;
+			background-size: contain;
 		}
 
 		.liver-disorders-container.active {
@@ -455,6 +462,14 @@
 			display: flex;
 		}
 
+		html.is-apk .star-bullets li {
+			font-size: 18px;
+			position: relative;
+			padding-left: 46px;
+			margin-bottom: 8px;
+			line-height: 1.25;
+		}
+
 		/* Tablet + Mobile */
 		@media (max-width: 991px) {
 			.side-nav {
@@ -514,11 +529,41 @@
 	</div>
 
 	<div class="side-nav">
-		<a href="index3.html" class="side-btn">❮</a>
-		<a href="index5.html" class="side-btn">❯</a>
+		<a href="index3.html" class="side-btn" id="prevBtn">❮</a>
+		<a href="index5.html" class="side-btn" id="nextBtn">❯</a>
 	</div>
 
 	<script>
+
+		var IS_ANDROID_WEBVIEW = /Android.*wv\)/i.test(navigator.userAgent);
+		if (IS_ANDROID_WEBVIEW) {
+			document.documentElement.classList.add('is-apk');
+		}
+
+		// NEW: check karo ke ye index5 ke baad wala "loop" index4 hai ya index3 ke baad wala normal index4
+		var __isLoopPage = false;
+		(function () {
+			var params = new URLSearchParams(window.location.search);
+			__isLoopPage = params.get('loop') === '1';
+			window.__isLoopPage = __isLoopPage;
+
+			if (__isLoopPage) {
+				document.addEventListener('DOMContentLoaded', function () {
+					var prevBtn = document.getElementById('prevBtn');
+					var nextBtn = document.getElementById('nextBtn');
+
+					if (prevBtn) {
+						prevBtn.setAttribute('href', 'index5.html');
+					}
+					if (nextBtn) {
+						nextBtn.classList.add('disabled');
+						nextBtn.removeAttribute('href');
+						nextBtn.style.pointerEvents = 'none';
+						nextBtn.style.opacity = '0.35';
+					}
+				});
+			}
+		})();
 
 		(function () {
 			var stage = document.getElementById('posterStage');
@@ -606,6 +651,7 @@
 		const posterEl = document.getElementById('posterStage');
 
 		function goToPage(url, direction) {
+			if (!url) return; // NEW: agar next disabled hai to url null/empty ho sakta hai
 			if (!posterEl) {
 				window.location.href = url;
 				return;
@@ -637,15 +683,16 @@
 
 			// minimum swipe distance
 			if (Math.abs(distance) > 80) {
-
-				// Swipe Right -> Previous
 				if (distance > 0) {
-					goToPage("index3.html", "prev");
+					// Swipe Right -> Previous
+					goToPage(window.__isLoopPage ? "index5.html" : "index3.html", "prev");
 				}
-
-				// Swipe Left -> Next
 				else {
-					goToPage("index5.html", "next");
+					// Swipe Left -> Next
+					if (!window.__isLoopPage) {
+						goToPage("index5.html", "next");
+					}
+					// agar loop page hai to next swipe par kuch nahi hoga (disabled)
 				}
 			}
 		});

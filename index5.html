@@ -133,13 +133,13 @@
 			background: #2c087a;
 			border-radius: 13px;
 			padding: 10px;
-			font-size: 14px;
+			font-size: 16px;
 			text-align: center;
 			color: #fdff22;
 			cursor: zoom-in;
-			margin-left: -60px;
+			margin-left: -99px;
 			margin-top: -6px;
-			width: 636px;
+			width: 711px;
 			padding-left: -3%;
 			padding-left: -13%;
 			font-family: arial, sans-serif;
@@ -332,6 +332,12 @@
 			background: rgba(255, 255, 255, 0.4);
 		}
 
+		.side-btn.disabled {
+			opacity: 0.35;
+			cursor: default;
+			pointer-events: none;
+		}
+
 		#zoom-overlay {
 			display: none;
 			position: fixed;
@@ -381,14 +387,11 @@
 			z-index: 10000 !important;
 			width: 123% !important;
 			max-width: 680px !important;
-			/* background: #ffffff !important; */
 			color: #111 !important;
 			font-size: 20px !important;
 			line-height: 1.6 !important;
 			padding: 24px !important;
 			border-radius: 14px !important;
-			/* box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important; */
-			/* border: 3px solid var(--primary-blue) !important; */
 			font-weight: bold;
 		}
 
@@ -404,12 +407,14 @@
 			max-width: 669px !important;
 			background: #2c087a !important;
 			color: #fdff22 !important;
-			font-size: 17px !important;
+			font-size: 16px !important;
 			line-height: 1.5 !important;
 			padding: 28px !important;
 			border-radius: 20px !important;
 			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
 			margin: 0 !important;
+
+
 
 		}
 
@@ -425,7 +430,7 @@
 			max-width: 661px !important;
 			background: #cc3333 !important;
 			color: #fff !important;
-			font-size: 25px !important;
+			font-size: 22px !important;
 			border-radius: 22px !important;
 			border: 3px solid #000 !important;
 			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
@@ -528,14 +533,17 @@
 		.jetepar-name {
 			display: block;
 			color: white;
-			font-size: 14px;
+			font-size: 18px;
 			font-weight: 900;
+			letter-spacing: -1px;
 		}
 
 		.group-item-active .jetepar-name {
-			font-size: 50px !important;
+			font-size: 52px !important;
 			line-height: 1;
 			color: white;
+			letter-spacing: -4px;
+
 		}
 
 
@@ -636,7 +644,8 @@
 						(<span class="jetepar">
 							J<span class="tight">ET</span><span class="normal">EPAR</span>
 						</span>)
-					</span> and when the signs of tissue hypoxia and predominent the drug applied in <strong>I</strong>
+					</span> and when the signs of tissue hypoxia and predominent the drug applied in group
+					<strong>I</strong>
 					shoud
 					be used.
 				</div>
@@ -650,12 +659,31 @@
 
 	<div class="side-nav">
 		<a href="index4.html" class="side-btn">❮</a>
-		<a href="index5.html" class="side-btn">❯</a>
-	</div>
-
+		<a href="index4.html?loop=1" class="side-btn">❯</a>
 	</div>
 
 	<script>
+		// Safe prefetch (link only, no fetch()) — kept consistent with other
+		// pages. fetch() is intentionally NOT used because it gets blocked
+		// on file:// pages inside Android WebView/APK builds and can cause
+		// black/blank screens on navigation.
+		(function () {
+			function prefetchPage(url) {
+				if (!url) return;
+
+				var l = document.createElement('link');
+				l.rel = 'prefetch';
+				l.href = url;
+				document.head.appendChild(l);
+			}
+
+			document.addEventListener('DOMContentLoaded', function () {
+				document.querySelectorAll('.side-nav a.side-btn:not(.disabled)').forEach(function (a) {
+					prefetchPage(a.getAttribute('href'));
+				});
+			});
+		})();
+
 		function zoomItem(el, activeClass) {
 			var alreadyActive = el.classList.contains(activeClass);
 			closeZoom();
@@ -710,10 +738,17 @@
 			updateWatermark(pw, ph);
 		}
 
-		var WATERMARK_REF_WIDTH = 756;   // poster's native design width (matches aspect-ratio: 756/1068)
-		var WATERMARK_REF_LEFT = -392;    // original left offset at that reference width
-		var WATERMARK_REF_FONT = 245;    // original font-size at that reference width
-		var WATERMARK_REF_TRACK = -23;   // original letter-spacing at that reference width
+		// Detect if running inside an Android WebView (APK) vs a normal browser.
+		// Android WebView user-agents contain "wv" right after the Android
+		// version/build block, e.g. "Mozilla/5.0 (Linux; Android 10; ...; wv) ...".
+		// Regular Chrome (desktop or mobile) never has this marker, so this
+		// detection does NOT affect how the page looks in any normal browser.
+		var IS_ANDROID_WEBVIEW = /Android.*wv\)/i.test(navigator.userAgent);
+
+		var WATERMARK_REF_WIDTH = 756;
+		var WATERMARK_REF_LEFT = IS_ANDROID_WEBVIEW ? -376.93 : -392;
+		var WATERMARK_REF_FONT = IS_ANDROID_WEBVIEW ? 223.05 : 245;
+		var WATERMARK_REF_TRACK = IS_ANDROID_WEBVIEW ? -20.60 : -23;   // original letter-spacing at that reference width
 
 		function updateWatermark(pw, ph) {
 			var watermark = document.getElementById('watermark');
@@ -774,25 +809,20 @@
 
 		document.addEventListener("touchend", function (e) {
 			endX = e.changedTouches[0].clientX;
-
 			let distance = endX - startX;
 
-			// minimum swipe distance
 			if (Math.abs(distance) > 80) {
-
-				// Swipe Right -> Previous
 				if (distance > 0) {
-					goToPage("index4.html", "prev"); // CHANGED
+					// Swipe Right -> Previous (normal index4, loop nahi)
+					goToPage("index4.html", "prev");
 				}
-
-				// Swipe Left -> Next
 				else {
-					goToPage("index5.html", "next"); // CHANGED
+					// Swipe Left -> Next (loop wala index4)
+					goToPage("index4.html?loop=1", "next");
 				}
 			}
 		});
 	</script>
-
 </body>
 
 </html>
