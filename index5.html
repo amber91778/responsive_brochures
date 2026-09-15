@@ -45,12 +45,22 @@
 			aspect-ratio: var(--poster-w) / var(--poster-h);
 			width: min(100vw, calc(100vh * var(--poster-w) / var(--poster-h)));
 			height: min(100vh, calc(100vw * var(--poster-h) / var(--poster-w)));
-			background: linear-gradient(to bottom, var(--primary-blue) 0%, var(--primary-blue) 61%, #c3daff 89%, #ffffff 100%);
 			overflow: hidden;
 			/* NEW: smooth transition for swipe animation */
 			transition: transform 0.35s ease, opacity 0.35s ease;
 			will-change: transform, opacity;
 			animation: posterFadeIn 0.35s ease;
+		}
+
+		.poster .bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: block;
+			z-index: 0;
+			object-fit: cover;
 		}
 
 		/* NEW: entry animation when page loads */
@@ -77,21 +87,6 @@
 			opacity: 0;
 		}
 
-		.watermark {
-			position: absolute;
-			left: 114px;
-			top: 49%;
-			transform: translateY(-50%) rotate(90deg);
-			font-size: 151px;
-			font-weight: 700;
-			color: #0b499d99;
-			letter-spacing: -14px;
-			pointer-events: none;
-			z-index: 1;
-			font-family: Arial, Helvetica, sans-serif;
-			white-space: nowrap;
-		}
-
 		.content-layer {
 			position: absolute;
 			top: 50%;
@@ -112,6 +107,35 @@
 			line-height: 1;
 			font-family: emoji;
 			margin-top: 1%;
+			margin-left: -21%;
+		}
+
+		.header-corner-img {
+			position: absolute;
+			top: -1px;
+			left: 72.5%;
+			width: 29%;
+			cursor: zoom-in;
+			z-index: 5;
+		}
+
+		.header-corner-img-active {
+			display: block !important;
+			visibility: visible !important;
+			position: fixed !important;
+			top: 50% !important;
+			left: 50% !important;
+			transform: translate(-50%, -50%) !important;
+			z-index: 10000 !important;
+			width: 100% !important;
+			max-width: 478px !important;
+			height: 54% !important;
+			border-radius: 20px !important;
+			margin: 0 !important;
+		}
+
+		html.is-apk .header-corner-img:not(.header-corner-img-active) {
+			left: 76.5% !important;
 		}
 
 		.header-sub {
@@ -120,30 +144,36 @@
 			font-size: 19px;
 			margin: -5px;
 			font-family: emoji;
+			margin-left: -22%;
 		}
 
 		.authors {
-			font-size: 12px;
+			font-size: 11px;
 			text-align: center;
 			line-height: 1.3;
 			cursor: zoom-in;
+			margin-left: -23%;
 		}
 
 		.purpose-bar {
 			background: #2c087a;
 			border-radius: 13px;
 			padding: 10px;
-			font-size: 16px;
+			font-size: 13px;
 			text-align: center;
 			color: #fdff22;
 			cursor: zoom-in;
 			margin-left: -99px;
-			margin-top: -6px;
-			width: 711px;
+			margin-top: -5px;
+			width: 572px;
 			padding-left: -3%;
 			padding-left: -13%;
 			font-family: arial, sans-serif;
-			word-spacing: 3px;
+			padding-left: 11%;
+		}
+
+		strong.purpose-strong {
+			font-weight: 900;
 		}
 
 		.section-label {
@@ -177,14 +207,14 @@
 			grid-template-columns: auto 1fr 1fr 1fr;
 			align-items: center;
 			gap: -55px;
-			margin-top: 3%;
+			margin-top: 2%;
 		}
 
 		.group-label {
 			color: white;
-			font-weight: bold;
-			font-size: 18px;
-			margin-left: 109%;
+			font-size: 19px;
+			margin-left: 91%;
+			font-family: sans-serif;
 		}
 
 		.group-item {
@@ -220,6 +250,7 @@
 			margin-left: -5%;
 			padding-top: 4%;
 			padding-bottom: 5%;
+			font-weight: 900;
 		}
 
 		.params-box {
@@ -244,7 +275,6 @@
 
 		.label {
 			width: 80px;
-			font-weight: 900 !important;
 			font-size: 15px;
 			margin-top: 10px;
 			margin-left: 4%;
@@ -256,18 +286,19 @@
 			color: #3e2595;
 			font-size: 13px;
 			line-height: 1.5;
-			font-weight: 800;
+			font-weight: 900;
+
 		}
 
 		.result-img {
-			width: 80%;
+			width: 73%;
 			height: auto;
 			border-radius: 30px;
 			border: 2px solid black;
 			cursor: zoom-in;
 			display: block;
-			margin-top: 3%;
-			margin-left: 12%;
+			margin-top: 2%;
+			margin-left: 17%;
 		}
 
 		.footer-text {
@@ -278,16 +309,16 @@
 			font-weight: 600;
 			padding: 10px;
 			border-radius: 8px;
-			margin-top: 2%;
-			font-family: arail, sans-serif;
+			margin-top: 1%;
+			font-family: arial, sans-serif;
 		}
 
 		.brand-name {
 			position: absolute;
 			right: 4%;
-			bottom: 1.6%;
+			bottom: 1.2%;
 			transform-origin: bottom right;
-			color: #0995e0;
+			color: #029eec;
 			text-align: right;
 			font-weight: 900;
 			font-size: 22px;
@@ -301,31 +332,28 @@
 		.side-nav {
 			position: fixed;
 			bottom: max(16px, env(safe-area-inset-bottom));
-			left: 0;
 			width: 100%;
 			display: flex;
 			justify-content: space-between;
-			padding: 0 20px;
+			padding: 0 clamp(10px, 3vw, 20px);
 			box-sizing: border-box;
 			pointer-events: none;
-			z-index: 100;
+			z-index: 9999;
 		}
 
 		.side-btn {
 			pointer-events: auto;
-			background: rgba(255, 255, 255, 0.2);
+			background: rgba(0, 0, 0, 0.5);
 			border: 2px solid white;
 			color: white;
-			width: 44px;
-			height: 44px;
+			width: clamp(38px, 9vw, 50px);
+			height: clamp(38px, 9vw, 50px);
 			border-radius: 50%;
 			cursor: pointer;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			font-size: 18px;
-			text-decoration: none;
-			transition: 0.3s;
+			touch-action: manipulation;
 		}
 
 		.side-btn:hover {
@@ -349,7 +377,7 @@
 			display: block;
 		}
 
-		.content-layer.zoomed>*:not(.header-title):not(.header-sub):not(.brand-name):not(.authors-active):not(.purpose-bar-active):not(.total-box-active):not(.group-item-active):not(.params-box-active):not(.result-img-active):not(.footer-text-active) {
+		.content-layer.zoomed>*:not(.header-title):not(.header-sub):not(.brand-name):not(.authors-active):not(.purpose-bar-active):not(.total-box-active):not(.group-item-active):not(.params-box-active):not(.result-img-active):not(.footer-text-active):not(.header-corner-img-active) {
 			visibility: hidden !important;
 			pointer-events: none !important;
 		}
@@ -373,7 +401,7 @@
 		}
 
 		.jetepar {
-			color: #0995e0;
+			color: #029eec;
 			font-weight: 900;
 		}
 
@@ -382,14 +410,14 @@
 			visibility: visible !important;
 			position: fixed !important;
 			top: 50% !important;
-			left: 50% !important;
+			left: 73% !important;
 			transform: translate(-50%, -50%) !important;
 			z-index: 10000 !important;
 			width: 123% !important;
 			max-width: 680px !important;
 			color: #111 !important;
-			font-size: 20px !important;
-			line-height: 1.6 !important;
+			font-size: 22px !important;
+			line-height: 1.5 !important;
 			padding: 24px !important;
 			border-radius: 14px !important;
 			font-weight: bold;
@@ -403,19 +431,16 @@
 			left: 50% !important;
 			transform: translate(-50%, -50%) !important;
 			z-index: 10000 !important;
-			width: 119% !important;
-			max-width: 669px !important;
+			width: 120% !important;
+			max-width: 670px !important;
 			background: #2c087a !important;
 			color: #fdff22 !important;
-			font-size: 16px !important;
+			font-size: 17px !important;
 			line-height: 1.5 !important;
 			padding: 28px !important;
 			border-radius: 20px !important;
 			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
 			margin: 0 !important;
-
-
-
 		}
 
 		.total-box-active {
@@ -478,17 +503,23 @@
 			border-radius: 18px !important;
 			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55) !important;
 			margin: 0 !important;
+			-webkit-text-size-adjust: 100% !important;
+			text-size-adjust: 100% !important;
 		}
 
 		.params-box-active .label {
-			font-size: 21px !important;
-			margin-top: 5%;
-			margin-left: 1%;
+			font-size: 22px !important;
+			margin-top: 5% !important;
+			margin-left: 0% !important;
+			-webkit-text-size-adjust: 100% !important;
+			text-size-adjust: 100% !important;
 		}
 
 		.params-box-active .content {
-			font-size: 16px !important;
-			margin-left: 13%;
+			font-size: 17px !important;
+			margin-left: 14% !important;
+			-webkit-text-size-adjust: 100% !important;
+			text-size-adjust: 100% !important;
 		}
 
 		.result-img-active {
@@ -534,7 +565,6 @@
 			display: block;
 			color: white;
 			font-size: 18px;
-			font-weight: 900;
 			letter-spacing: -1px;
 		}
 
@@ -546,6 +576,13 @@
 
 		}
 
+		strong.strong-I {
+			font-weight: 900;
+		}
+
+		strong.strong-II {
+			font-weight: 900;
+		}
 
 		/* Desktop */
 		.side-nav {
@@ -568,10 +605,13 @@
 	<div class="container">
 
 		<div class="poster">
-			<div class="watermark" id="watermark">JETEPAR</div>
+			<img src="Artboard 1.png" class="bg" alt="">
 
 			<div class="content-layer" id="contentLayer">
 				<h1 class="header-title">Neurotropic Effects of <br>Hepatoprotectors</h1>
+				<img src="russian_medical_journal.png" .png" class="header-corner-img"
+					onclick="zoomItem(this, 'header-corner-img-active')" alt="Journal Cover">
+
 				<p class="header-sub">During Alcohol Poisoning</p>
 
 				<div class="authors" onclick="zoomItem(this, 'authors-active')">
@@ -583,7 +623,8 @@
 				</div>
 
 				<div class="purpose-bar" onclick="zoomItem(this, 'purpose-bar-active')">
-					<strong>Purpose:</strong> To compare the efficacy of metabolic hepatoprotectors at an <br>early
+					<strong class="purpose-strong">Purpose:</strong> To compare the efficacy of metabolic
+					hepatoprotectors at an <br>early
 					stage of acute alcohol poisoning complicated by toxic hepatitis.
 				</div>
 
@@ -632,20 +673,22 @@
 
 				<div class="footer-text" onclick="zoomItem(this, 'footer-text-active')">
 					As determined by the Reitan test that established level of hepatic encephalopathy,
-					<b>The best therapeutic effect was found in patients who received</b> <span class="jetepar">
+					<b class="bold-effect">The best therapeutic effect was found in patients who received</b> <span
+						class="jetepar">
 						J<span class="tight">ET</span><span class="normal">EPAR</span>
 					</span>
 					<br><br>
-					<strong>Conclusion:</strong> The drug used in group <strong>I</strong> possessed increased
+					<strong class="conclusion-strong">Conclusion:</strong> The drug used in group <strong
+						class="strong-I">I</strong> possessed increased
 					antihypoxant properties but smaller hepatoprotective properties than the drug used in group
-					<strong>II.</strong> <span style="color:#009aee">When signs of toxic hepatitis are
+					<strong class="strong-II">II.</strong> <span style="color:#009aee">When signs of toxic hepatitis are
 						predominant, it would be more preferable to used the drug applied in group II</span>
 					<span style="color:#009aee;">
 						(<span class="jetepar">
 							J<span class="tight">ET</span><span class="normal">EPAR</span>
 						</span>)
 					</span> and when the signs of tissue hypoxia and predominent the drug applied in group
-					<strong>I</strong>
+					<strong class="strong-I">I</strong>
 					shoud
 					be used.
 				</div>
@@ -697,9 +740,9 @@
 		}
 
 		function closeZoom() {
-			document.querySelectorAll('[data-active-class], .authors-active, .purpose-bar-active, .total-box-active, .group-item-active, .params-box-active, .result-img-active, .footer-text-active')
+			document.querySelectorAll('[data-active-class], .authors-active, .purpose-bar-active, .total-box-active, .group-item-active, .params-box-active, .result-img-active, .footer-text-active, .header-corner-img-active')
 				.forEach(function (e) {
-					e.classList.remove('authors-active', 'purpose-bar-active', 'total-box-active', 'group-item-active', 'params-box-active', 'result-img-active', 'footer-text-active');
+					e.classList.remove('authors-active', 'purpose-bar-active', 'total-box-active', 'group-item-active', 'params-box-active', 'result-img-active', 'footer-text-active', 'header-corner-img-active');
 					delete e.dataset.activeClass;
 				});
 			document.getElementById('contentLayer').classList.remove('zoomed');
@@ -734,8 +777,6 @@
 			if (brand) {
 				brand.style.transform = 'scale(' + scale + ')';
 			}
-
-			updateWatermark(pw, ph);
 		}
 
 		// Detect if running inside an Android WebView (APK) vs a normal browser.
@@ -745,21 +786,16 @@
 		// detection does NOT affect how the page looks in any normal browser.
 		var IS_ANDROID_WEBVIEW = /Android.*wv\)/i.test(navigator.userAgent);
 
-		var WATERMARK_REF_WIDTH = 756;
-		var WATERMARK_REF_LEFT = IS_ANDROID_WEBVIEW ? -376.93 : -392;
-		var WATERMARK_REF_FONT = IS_ANDROID_WEBVIEW ? 223.05 : 245;
-		var WATERMARK_REF_TRACK = IS_ANDROID_WEBVIEW ? -20.60 : -23;   // original letter-spacing at that reference width
+		// NEW — tag <html> for ALL APK screens (phone + tablet), so CSS can
+		// target APK-only rendering differences that differ from desktop/mobile
+		// browsers (e.g. .header-corner-img left-position offset).
+		if (IS_ANDROID_WEBVIEW) {
+			document.documentElement.classList.add('is-apk');
+		}
 
-		function updateWatermark(pw, ph) {
-			var watermark = document.getElementById('watermark');
-			if (!watermark || !pw) return;
-
-			var ratio = pw / WATERMARK_REF_WIDTH;
-
-			watermark.style.left = (WATERMARK_REF_LEFT * ratio) + 'px';
-			watermark.style.fontSize = (WATERMARK_REF_FONT * ratio) + 'px';
-			watermark.style.letterSpacing = (WATERMARK_REF_TRACK * ratio) + 'px';
-			watermark.style.transform = 'translateY(-50%) rotate(90deg)';
+		// NEW — tag <html> for tablet-size APK screens specifically
+		if (IS_ANDROID_WEBVIEW && window.innerWidth >= 600) {
+			document.documentElement.classList.add('is-apk-tablet');
 		}
 
 		window.addEventListener('load', fitContent);
@@ -823,6 +859,46 @@
 			}
 		});
 	</script>
+	<!-- Code injected by live-server -->
+	<script>
+		// <![CDATA[  <-- For SVG support
+		if ('WebSocket' in window) {
+			(function () {
+				function refreshCSS() {
+					var sheets = [].slice.call(document.getElementsByTagName("link"));
+					var head = document.getElementsByTagName("head")[0];
+					for (var i = 0; i < sheets.length; ++i) {
+						var elem = sheets[i];
+						var parent = elem.parentElement || head;
+						parent.removeChild(elem);
+						var rel = elem.rel;
+						if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+							var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+							elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+						}
+						parent.appendChild(elem);
+					}
+				}
+				var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+				var address = protocol + window.location.host + window.location.pathname + '/ws';
+				var socket = new WebSocket(address);
+				socket.onmessage = function (msg) {
+					if (msg.data == 'reload') window.location.reload();
+					else if (msg.data == 'refreshcss') refreshCSS();
+				};
+				if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+					console.log('Live reload enabled.');
+					sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+				}
+			})();
+		}
+		else {
+			console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+		}
+		// ]]>
+	</script>
+
+
 </body>
 
 </html>
